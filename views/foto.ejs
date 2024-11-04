@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Foto</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Daftar Foto</h1>
+    <div class="gallery">
+        <% if (fotoFiles.length > 0) { %>
+            <% fotoFiles.forEach(function(foto) { %>
+                <div class="gallery-item">
+                    <img src="/database/foto/<%= foto %>" alt="Foto" width="200">
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>Tidak ada foto yang ditemukan.</p>
+        <% } %>
+    </div>
+</body>
+</html>

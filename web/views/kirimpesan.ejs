@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirim Pesan WhatsApp</title>
+</head>
+<body>
+    <h1>Kirim Pesan WhatsApp</h1>
+    <form action="/kirimpesan" method="POST">
+        <label for="nomor">Nomor WhatsApp:</label>
+        <input type="text" id="nomor" name="nomor" placeholder="628xxxxxxx" required><br><br>
+
+        <label for="pesan">Pesan:</label>
+        <textarea id="pesan" name="pesan" placeholder="Masukkan pesan..." required></textarea><br><br>
+
+        <button type="submit">Kirim Pesan</button>
+    </form>
+</body>
+</html>

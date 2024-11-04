@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halaman Nokos</title>
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/javascript">
+        // Mengirim data dari server ke JavaScript di client
+        window.USER_DATA = {
+            username: "<%= username %>",
+            saldo: "<%= saldo %>",
+            services: <%- JSON.stringify(services) %> // Mengirim data services dari server ke client
+        };
+    </script>
+
+    <script type="text/babel">
+        const App = () => {
+            const [searchTerm, setSearchTerm] = React.useState("");
+            const username = window.USER_DATA.username;
+            const saldo = window.USER_DATA.saldo;
+            const services = window.USER_DATA.services; // Data dari API OTPku
+
+            // Filter layanan berdasarkan pencarian
+            const filteredServices = services.filter(service =>
+                service.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            return (
+                <div className="bg-blue-500 min-h-screen flex flex-col">
+                    <div className="flex items-center p-4 bg-blue-500 text-white">
+                        <img src="https://placehold.co/40x40" alt="User avatar" className="rounded-full w-10 h-10 mr-2" />
+                        <span>{username}</span>
+                        <i className="fas fa-bell ml-auto"></i>
+                    </div>
+                    <div className="bg-white p-4 m-4 rounded-lg shadow-md">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-gray-500">Jumlah Saldo</p>
+                                <p className="text-2xl font-bold">{parseInt(saldo).toLocaleString('id-ID')}</p>
+                            </div>
+                            <div className="flex items-center">
+                                <i className="fas fa-wallet text-black mr-2"></i>
+                                <i className="fas fa-plus text-black mr-2"></i>
+                                <i className="fas fa-headphones text-black"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 m-4 rounded-lg shadow-md">
+                        <input
+                            type="text"
+                            placeholder="Cari layanan, negara, atau kategori..."
+                            className="w-full p-2 border rounded-lg"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                    <div className="bg-white p-4 m-4 rounded-lg shadow-md flex-1 overflow-y-auto">
+                        <h2 className="text-lg font-bold mb-4">Layanan</h2>
+                        {filteredServices.map(service => (
+                            <a href={`/nokos-otp/${service.country}/${service.id}`} key={service.id} className="flex items-center justify-between p-4 mb-2 bg-gray-100 rounded-lg">
+                                <div className="flex items-center">
+                                    <img src="./database/walogo.png" alt={`${service.name} logo`} className="w-10 h-10 mr-2" />
+                                    <div>
+                                        <p className="font-bold">{service.name} - {service.country}</p>
+                                        <p className="text-gray-500">Stok: {service.tersedia}</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center">
+                                    <span className="bg-green-200 text-green-700 px-2 py-1 rounded-lg">✔️</span>
+                                    <span className="ml-4">Rp {parseInt(service.price).toLocaleString('id-ID')}</span>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
