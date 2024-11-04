@@ -32,6 +32,7 @@ module.exports = handleMenu = async (sock, from, commandText) => {
     const command = commandText.split(' ')[0].toLowerCase();
     const args = commandText.slice(command.length + 1).trim().split(/\s+/); // Ubah menjadi array
     const text = args.join(' '); // Ini akan bekerja dengan args sebagai array
+    const pesan = args.slice(1).join(' ');
     const widipe = axios.create({
         baseURL: 'https://widipe.com',
         timeout: 10000,
@@ -638,6 +639,35 @@ const coin = cekCoin(from);
             
                 break;
         }
+        case 'kirimpesan': {
+            let nomor  = args[0];
+
+            let data = JSON.stringify({
+                "nomor": nomor,
+                "pesan": pesan
+              });
+              let config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: 'http://localhost:9999/kirimpesan', // Tambahkan 'http://' jika belum ada
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Cookie': 'connect.sid=s%3AIoVJQtZn0sZX9j_JeJ7uJ90z0kCmndY8.seYKUB3vX9zCWxoxP0OqkuP5SEbvxdEzu%2FemXUDQDaY'
+                },
+                data: data
+              };
+              
+              axios.request(config)
+              .then((response) => {
+                reply(JSON.stringify(response.data));
+                console.log(JSON.stringify(response.data));
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+            console.log(nomor + pesan)
+        }
+        break;
         case 'topuplimit': {
                 // Ambil nomor pengirim
                 let sender = from;  // Menggunakan 'from' untuk mengambil nomor pengirim
