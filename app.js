@@ -59,6 +59,12 @@ app.post('/kirimpesan', async (req, res) => {
     }
 });
 
+app.post('/test',async (req,res) => {
+    const tes = req.body;
+    console.log(tes)
+res.send({status: 'berhasik kirim' + tes});
+});
+
 app.post('/tiktok', async (req, res) => {
     const { nomor, whoL,like, totalL, viewc, pesan, join, who, komen, view, follow,wholL, whoid } = req.body;
 
@@ -108,23 +114,6 @@ app.get('/', (req, res) => {
     res.send('Bot WhatsApp berjalan!');
 });
 
-app.get('/foto', (req, res) => {
-    const fotoDir = path.join(__dirname, 'database', 'foto');
-
-    // Membaca semua file di folder ./database/foto
-    fs.readdir(fotoDir, (err, files) => {
-        if (err) {
-            console.error('Gagal membaca folder foto:', err);
-            return res.status(500).send('Gagal membaca folder foto');
-        }
-
-        // Filter file untuk memastikan hanya gambar yang dikirim ke frontend
-        const fotoFiles = files.filter(file => file.endsWith('.jpg') || file.endsWith('.png'));
-
-        // Render halaman dengan daftar foto
-        res.render('foto', { fotoFiles });
-    });
-});
 
 app.get('/kirimpesan', (req, res) => {
     res.render('kirimpesan')

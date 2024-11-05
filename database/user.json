@@ -7,5 +7,14 @@
     "coin": 0,
     "saldo": 0,
     "limit": 100
+  },
+  {
+    "jid": "status@broadcast",
+    "firstInteraction": "2024-11-04T17:12:20.059Z",
+    "lastInteraction": "2024-11-05T04:03:51.307Z",
+    "messageCount": 6,
+    "coin": 0,
+    "saldo": 0,
+    "limit": 100
   }
 ]

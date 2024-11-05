@@ -639,7 +639,7 @@ const coin = cekCoin(from);
             
                 break;
         }
-        case 'kirimpesan': {
+        case 'kirimpesan': { 
             let nomor  = args[0];
 
             let data = JSON.stringify({

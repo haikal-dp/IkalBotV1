@@ -1,3 +1,4 @@
 node_modules/
 baileys/
 session/
+database/user.json
