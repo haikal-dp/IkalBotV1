@@ -2,12 +2,7 @@ const express = require('express');
 const path = require('path');
 const { startBot } = require('./index'); // Import startBot dari file index.js
 const app = express();
-const fs = require('fs');
-const session = require('express-session');
 const axios = require('axios');  // Tambahkan axios
-const { text } = require('body-parser');
-const { waLabelAssociationKey } = require('@whiskeysockets/baileys/lib/Store/make-in-memory-store');
-const otpkuapi = 'FIijZbzDScan95VEXWL87Trh4fAKyu';
 
 const port = process.env.PORT || 9999;
 
@@ -17,13 +12,6 @@ let sock; // Variabel global untuk menyimpan sock
 // Middleware untuk parsing form data
 app.use(express.urlencoded({ extended: true }));
 
-// Setup session
-app.use(session({
-    secret: 'Haikubroook8383', // Key rahasia untuk menandatangani cookie sesi
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }
-}));
 
 // Mulai bot dan simpan sock
 startBot().then((result) => {
@@ -36,10 +24,6 @@ startBot().then((result) => {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Redirect root ke login
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'home.html'));
-});
 
 // Endpoint untuk mengirim pesan
 app.post('/kirimpesan', async (req, res) => {
@@ -53,16 +37,11 @@ app.post('/kirimpesan', async (req, res) => {
         // Kirim pesan menggunakan sock
         await sock.sendMessage(nomor + '@s.whatsapp.net', { text: pesan });
         res.send({ status: 'Pesan berhasil dikirim!' });
+        console.log('Pesan dikirim')
     } catch (err) {
         console.error('Gagal mengirim pesan:', err);
         res.status(500).send({ error: 'Gagal mengirim pesan' });
     }
-});
-
-app.post('/test',async (req,res) => {
-    const tes = req.body;
-    console.log(tes)
-res.send({status: 'berhasik kirim' + tes});
 });
 
 app.post('/tiktok', async (req, res) => {
@@ -108,10 +87,6 @@ app.post('/tiktok', async (req, res) => {
         console.error('Gagal mengirim pesan atau data:', err);
         res.status(500).send({ error: 'Gagal mengirim pesan atau data' });
     }
-});
-// Endpoint untuk mengecek status bot
-app.get('/', (req, res) => {
-    res.send('Bot WhatsApp berjalan!');
 });
 
 

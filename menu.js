@@ -1,33 +1,14 @@
 require('./setting');//require('./database/lib/bankcek');
 const { modul } = require('./database/lib/module')
+const {axios, path, fs, process} = modul
 
-require('./database/listmenu');
-
-const { clockString, parseMention, formatp, tanggal, getTime, isUrl, sleep, runtime, fetchJson, getBuffer, jsonformat, format, reSize, generateProfilePicture, getRandom } = require('./database/lib/myfunc')
-const { os, axios, baileys, chalk, cheerio, path, child_process, crypto, cookie, FormData, FileType, fetch, fs, fsx, ffmpeg, Jimp, jsobfus, PhoneNumber, process, moment, ms, speed, syntaxerror, util, ytdl, googleTTS, nodecron, maker } = modul
-
-const { BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto, generateWAMessageContent, generateWAMessage, prepareWAMessageMedia, areJidsSameUser, getContentType, generateForwardMessageContent } = baileys
-const { error } = require('console');
-
-const { isGroup } = require('./database/lib/isGroup');
-const { isPc } = require('./database/lib/isPc');
-const { isOwner } = require('./database/lib/isOwner');
-const { isPremium } = require('./database/lib/isPremium');
-const { addLimit } = require('./database/lib/AddLimit')
-const { addSaldo } = require ('./database/lib/AddSaldo');
-const { isLimit } = require('./database/lib/isLimit');
-const { cekLimit } = require('./database/lib/cekLimit');
-const { cekSaldo } = require('./database/lib/cekSaldo');
-const { cekCoin } = require('./database/lib/cekCoin');
-
-const vouchers = JSON.parse(fs.readFileSync('./database/voucher.json'));
+const { isOwner,isPremium} = require('./database/lib/role');
 // Path ke file owner.json dan user.json
 const roleDatabasePath = path.join(__dirname, 'database', 'role.json');
 const userDatabasePath = path.join(__dirname, 'database', 'user.json');
 
 module.exports = handleMenu = async (sock, from, commandText) => {
-    const users = JSON.parse(fs.readFileSync('./database/user.json'));
-    const sender = from; // Ambil pengirim pesan
+
     const reply = (message) => sock.sendMessage(from, { text: message }); // Fungsi untuk membalas pesan
     const command = commandText.split(' ')[0].toLowerCase();
     const args = commandText.slice(command.length + 1).trim().split(/\s+/); // Ubah menjadi array
@@ -37,57 +18,8 @@ module.exports = handleMenu = async (sock, from, commandText) => {
         baseURL: 'https://widipe.com',
         timeout: 10000,
         headers: { 'Content-Type': 'application/json' }
-    }); switch (command) {
-        case 'nyulikv2': {
-        if (!isOwner) return reply('Khusus owner bro!');
-            //if (!isGroup(from)) return reply('Perintah ini hanya bisa digunakan di dalam grup!');
-            
-            // Path ke file JSON yang berisi daftar nomor
-            const jsonFilePath = './nomor.json'; // Sesuaikan path ini dengan path sebenarnya
-            
-            if (!fs.existsSync(jsonFilePath)) return reply('File nomor tidak ditemukan!');const nomorList = JSON.parse(fs.readFileSync(jsonFilePath));
-            
-            if (!Array.isArray(nomorList) || nomorList.length === 0) return reply('Tidak ada nomor yang tersedia untuk dimasukkan.');
-        reply(`Proses menambahkan ${nomorList.length} nomor ke grup dimulai...`);
-        
-            // Fungsi untuk menambahkan nomor dengan delay
-            const addMembers = async () => {
-                for (let i = 0; i < nomorList.length; i++) {
-                    const targetJid = nomorList[i];
-                    try {
-                        await sock.groupParticipantsUpdate(from, [targetJid], 'add'); // Tambahkan nomor ke grup
-                        reply(`Berhasil menambahkan ${targetJid} ke grup.`);
-                    } catch (err) {
-                        reply(`Gagal menambahkan ${targetJid} ke grup.`);
-                        console.error(err);
-                    }
-                    // Delay 5 detik sebelum menambahkan nomor berikutnya
-                    await new Promise(resolve => setTimeout(resolve, 5000));
-                }
-            };
-        
-            // Jalankan fungsi untuk menambahkan nomor
-            addMembers();
-        
-            break;
-        }
-        
-        case 'nyulik': {
-            //if (!isGroup(from)) return reply('Perintah ini hanya bisa digunakan di dalam grup!');
-            
-            if (!text) return reply('Masukkan nomor yang valid!');
-        
-            const targetJid = `${text}@s.whatsapp.net`; // Nomor yang akan dimasukkan ke grup
-            
-            try {
-                await sock.groupParticipantsUpdate(from, [targetJid], 'add'); // Tambahkan nomor ke grup
-                reply(`Berhasil menambahkan ${text} ke grup!`);
-            } catch (err) {
-                reply('Gagal menambahkan nomor ke grup. Mungkin bot tidak memiliki izin.');
-                console.error(err);
-            }
-            break;
-        }
+    }); 
+    switch (command) {
             case 'chord':{
             
                 if (!text) return reply('Kamu mau cari chord lagu apa nih ');
@@ -137,55 +69,6 @@ module.exports = handleMenu = async (sock, from, commandText) => {
                         });
                     break;
                 }
-                case 'addvoucher':
-                    if (!isOwner) return reply('Khusus owner bro!');
-                    
-                    let amount = args[0];
-                    if (!amount || isNaN(amount)) return reply('Tolong masukkan jumlah saldo!');
-                
-                    // Membuat kode voucher random 12 digit
-                    const voucherCode = Math.random().toString(36).substring(2, 14).toUpperCase();
-                
-                    // Menyimpan voucher ke database
-                    vouchers[voucherCode] = {
-                        amount: parseInt(amount),
-                        redeemed: false
-                    };
-                    fs.writeFileSync('./database/voucher.json', JSON.stringify(vouchers, null, 2));
-                
-                    // Respon ke pengguna dan log ke console
-                    reply(`Ini dia kak kode voucher kamu: ${voucherCode} dengan saldo sebesar ${amount}`);
-                    console.log(`Voucher dibuat: Kode: ${voucherCode}, Jumlah: ${amount}`);
-                    break;
-                case 'redeem':
-                    
-                    let code = args[0];
-                    if (!code) return reply('Tolong masukkan kode voucher!');
-                
-                    // Cek apakah voucher valid dan belum di-redeem
-                    if (!vouchers[code]) return reply('Kode voucher tidak valid!');
-                    if (vouchers[code].redeemed) return reply('Kode voucher sudah digunakan!');
-                
-                    // Tambahkan saldo ke user
-                    let userId = from; // sesuaikan ini dengan ID pengguna
-                    if (!users[userId]) {
-                        // Jika pengguna baru
-                        users[userId] = { saldo: 0 };
-                    }
-                
-                    users[userId].saldo += vouchers[code].amount;
-                
-                    // Tandai voucher sebagai sudah digunakan
-                    vouchers[code].redeemed = true;
-                
-                    // Simpan perubahan ke file
-                    fs.writeFileSync('./database/voucher.json', JSON.stringify(vouchers, null, 2));
-                    fs.writeFileSync('./database/user.json', JSON.stringify(users, null, 2));
-                
-                    // Respon ke pengguna dan log ke console
-                    reply(`Redeem berhasil! Kamu mendapatkan saldo sebesar ${vouchers[code].amount}. Saldo sudah ditambahkan ke akun kamu.`);
-                    console.log(`Voucher berhasil di-redeem: Kode: ${code}, Jumlah: ${vouchers[code].amount}, Pengguna: ${userId}`);
-                    break;
                 case 'addowner': {
             if (!isOwner(from)) {
                 reply('Khusus owner!');
@@ -303,217 +186,6 @@ module.exports = handleMenu = async (sock, from, commandText) => {
             })();
             break;
         }
-        case 'owner': {reply(`Nomor owner: ${global.owner}`); // Menggunakan global.owner
-            break;
-        }
-        case 'menu': case 'help':{reply(`=========================
-    INFORMASI OWNER
-    乂 NAMA OWNER : ${global.namaowner}
-    乂 NOMOR OWNER: ${global.nomorowner}
-    ${global.listmenu}`);
-            break;
-        }
-        case 'allmenu': {reply(`=========================
-    INFORMASI OWNER
-    乂 NAMA OWNER : ${global.namaowner}
-    乂 NOMOR OWNER: ${global.nomorowner}
-    ${global.allmenu}`);
-            break;
-        }
-        case 'ownermenu': {reply(`
-    ${global.ownermenu}`);
-            break;
-        }
-        case 'toolsmenu': {reply
-   (`${global.toolsmenu}`);
-            break;
-        }
-        case 'gamemenu': {reply(`
-                ${global.gamemenu}`);
-                        break;
-        }
-        case 'aimenu': {reply(`
-                ${global.aimenu}`);
-                        break;
-        }
-        case 'saldomenu': {reply(`
-    ${global.saldomenu}`);
-            break;
-        }
-        case 'belanjamenu': {reply(`
-    ${global.belanjamenu}`);
-            break;
-        }
-        case 'limit': {
-            if (!isLimit(from)) {
-                return reply('Maaf limit kamu habis.');
-            }reply('Limit kamu berkurang 1 hahaha');
-            break;
-        }
-        case 'addlimit': {
-            if (!isOwner(from)) {
-                await reply('Khusus owner!');
-                return;
-            }
-        
-            console.log(`Perintah addlimit dipanggil oleh ${from}`);
-        
-            if (!args || !commandText.includes('|')) {
-                await reply('Format salah. Gunakan: addlimit nomor|jumlah');
-                return;
-            }
-        
-            // Pisahkan perintah dan argumen
-            const commandParts = commandText.split(' '); // Pisahkan berdasarkan spasi
-            const argText = commandParts.slice(1).join(' '); // Ambil bagian setelah 'addsaldo'
-        
-            const [target, amountStr] = argText.split('|').map(arg => arg.trim()); // Pisahkan dengan '|'
-            const amount = parseInt(amountStr);
-        
-            console.log(`Target: ${target}, Jumlah: ${amount}`);
-        
-            if (!target || isNaN(amount)) {
-                await reply('Format salah. Gunakan: addlimit nomor|jumlah');
-                return;
-            }
-        
-            let users = JSON.parse(fs.readFileSync(userDatabasePath));
-            console.log(`Users: ${JSON.stringify(users)}`);
-        
-            if (!users[target]) {
-                await reply('Pengguna tidak ditemukan.');
-                return;
-            }
-        
-            users[target].limit = (users[target].limit || 0) + amount;
-        
-            fs.writeFileSync(userDatabasePath, JSON.stringify(users, null, 2));
-        
-            await reply(`limit untuk ${target} berhasil ditambah sebanyak ${amount}`);
-            console.log(`limit berhasil ditambah untuk ${target}`);
-            await sock.sendMessage(target, { text: `Hai, limit sebesar ${amount} telah berhasil diisi. Limitmu sekarang ${users[target].limit}.` });
-            break;
-        }
-        case 'addsaldo': {
-            if (!isOwner(from)) {
-                await reply('Khusus owner!');
-                return;
-            }
-        
-            console.log(`Perintah addsaldo dipanggil oleh ${from}`);
-        
-            if (!args || !commandText.includes('|')) {
-                await reply('Format salah. Gunakan: addsaldo nomor|jumlah');
-                return;
-            }
-        
-            // Pisahkan perintah dan argumen
-            const commandParts = commandText.split(' '); // Pisahkan berdasarkan spasi
-            const argText = commandParts.slice(1).join(' '); // Ambil bagian setelah 'addsaldo'
-        
-            const [target, amountStr] = argText.split('|').map(arg => arg.trim()); // Pisahkan dengan '|'
-            const amount = parseInt(amountStr);
-        
-            console.log(`Target: ${target}, Jumlah: ${amount}`);
-        
-            if (!target || isNaN(amount)) {
-                await reply('Format salah. Gunakan: addsaldo nomor|jumlah');
-                return;
-            }
-        
-            let users = JSON.parse(fs.readFileSync(userDatabasePath));
-            console.log(`Users: ${JSON.stringify(users)}`);
-        
-            if (!users[target]) {
-                await reply('Pengguna tidak ditemukan.');
-                return;
-            }
-        
-            users[target].saldo = (users[target].saldo || 0) + amount;
-        
-            fs.writeFileSync(userDatabasePath, JSON.stringify(users, null, 2));
-        
-            await reply(`Saldo untuk ${target} berhasil ditambah sebanyak Rp.${amount}`);
-            await sock.sendMessage(target, { text: `Hai, saldo sebesar Rp.${amount} telah berhasil diisi. Saldomu sekarang Rp.${users[target].saldo}.` });
-             console.log(`Saldo berhasil ditambah untuk ${target}`);
-            process.exit();
-            break;
-        }
-         case 'ceksaldo':case'saldo': case 'ceklimit':case 'bank':case 'balance':case 'bal': {
-                            
-const saldomessasge = cekSaldo(from);
-const limitMessage = cekLimit(from);
-const coin = cekCoin(from);
-                            reply (`    *🏦 BANK*\n\n💰 Sisa Saldo Anda:${saldomessasge} \n🔴Sisa Limit Anda:${limitMessage}\nSisa Coin Anda:${coin}\n\nKamu bisa melakukan TopUp Saldo Dan Limit dengan cara\nKetik TopUp.`)
-            break;
-        }
-        case 'topup':{reply('Disini tersedia 2 pilihan topup.\n\nTopUp limit dengan saldo\n100 Limit = Rp.1000 saldo\nKetik TopupLimit (jumlah) \n\nTopUp saldo bisa dengan cara' + global.payment)
-        break;
-        }
-        case 'infoscript':{reply('HaikungBot V1\n\nUntuk script ini sudah origian dari haikal\nMau lihat fiturnya ketik menu saja!.\n\nHarga script ini Rp.10.000 saja , sudah free update juga lhoo, langsung saja ketik Beliscript');
-            break;
-        }
-        case 'beliscript':
-           
-        const userData = JSON.parse(fs.readFileSync(userDatabasePath)); // Load database pengguna
-        const user = userData[sender]; // Ambil data pengguna dari database
-     
-        if (!user) {return reply('Kamu belum terdaftar!');
-        }
-    
-        // Cek saldo pengguna
-        if (user.saldo < 10000) {return reply(`Maaf, saldo kamu tidak cukup.\n\nSaldo kamu saat ini ${cekSaldo(from)}\n\n Untuk beli script bot ini kamu harus memiliki Saldo Rp.10.000 untuk membelinya.\nKetik TopUp untuk mengisi Saldo`);
-        }
-    
-        // Kurangi saldo pengguna
-        user.saldo -= 10000;
-    
-        // Path ke file yang ingin dikirim
-        const filePath = './database/file/nomor.csv';
-        
-        // Kirim file ke pengguna
-        await sock.sendMessage(from, {
-            document: { url: filePath },
-            mimetype: 'application/vnd.rar',
-            fileName: 'script.rar'
-        });
-    
-        // Balas dengan pesan sisa saldo
-        reply(`Ini filenya kak, terimakasih banyakk\nSisa saldo kamu sekarang Rp: ${user.saldo}`);
-    
-        // Update saldo di user.json
-        fs.writeFileSync('./database/user.json', JSON.stringify(user, null, 2));
-    
-        break;
-        
-        
-        case 'bj':
-    if (!args[0] || isNaN(args[0])) return reply('Masukkan jumlah taruhan yang valid!');
-    
-    let taruhan = parseInt(args[0]);
-
-    if (!users[sender] || users[sender].saldo < taruhan) {
-        return reply('Saldo tidak cukup untuk bertaruh!');
-    }
-
-    let botNumber = Math.floor(Math.random() * 21) + 4; // Bot dapat angka acak antara 1 - 100
-    let userNumber = Math.floor(Math.random() * 21) + 1; // Pengguna dapat angka acak antara 1 - 100
-
-    if (botNumber >= userNumber) {
-        // Bot menang
-        users[sender].saldo -= taruhan; // Kurangi saldo pengguna
-        fs.writeFileSync('./database/user.json', JSON.stringify(users, null, 2)); // Simpan perubahan saldo
-        let saldoBaru = users[sender].saldo;
-        return reply(`BOT Mendapatkan: ${botNumber}\nKAMU Mendapatkan : ${userNumber}\n\nKamu kalah!! Kamu kehilangan Rp.*${taruhan}*\nSisa saldo kamu *${saldoBaru}*`);
-    } else {
-        // Pengguna menang
-        users[sender].saldo += taruhan; // Tambah saldo pengguna
-        fs.writeFileSync('./database/user.json', JSON.stringify(users, null, 2)); // Simpan perubahan saldo
-        let saldoBaru = users[sender].saldo;
-        return reply(`BOT Mendapatkan: ${botNumber}\nKAMU Mendapatkan : ${userNumber}\n\nKamu menang!! Mendapatkan Rp.*${taruhan}*\nSisa saldo kamu *${saldoBaru}*`);
-    }
-    break;
-
         case 'delcase': {
     if (!isOwner) return reply(onlyowner); // Hanya pemilik yang bisa menghapus case
     if (!text) return reply('Mana case yang mau dihapus?');
@@ -556,89 +228,7 @@ const coin = cekCoin(from);
     });
    }
    break;
-        case 'tf':case 'transfer': {
-                // Memeriksa apakah format pesan mengandung '|'
-                if (!commandText.includes('|')) return reply('Format salah! Gunakan format: Transfer (tujuan) | (jumlah)');
-            
-                // Memisahkan command dari argumen
-                const commandParts = commandText.split(' '); // Memisahkan berdasarkan spasi
-                const argsString = commandParts.slice(1).join(' '); // Mengambil sisa argumen setelah nama command
-            
-                // Memisahkan argumen berdasarkan '|'
-                const parts = argsString.split('|');
-            
-                // Mendapatkan target number dan jumlah transfer
-                const targetNumber = parts[0].trim(); 
-                const jumlahTransferStr = parts[1].trim(); 
-            
-                // Mengonversi jumlah transfer dari string ke integer
-                let jumlahTransfer = parseInt(jumlahTransferStr);
-            
-                // Validasi untuk memastikan jumlah transfer adalah angka
-                if (isNaN(jumlahTransfer)) {
-                    return reply('Jumlah transfer harus berupa angka.');
-                }
-            
-                // Memastikan targetNumber hanya mengandung angka
-                if (!targetNumber.match(/^\d+$/)) {
-                    return reply('Nomor tujuan harus berupa angka.');
-                }
-            
-                // Menambahkan domain @s.whatsapp.net ke nomor tujuan
-                let fullTargetNumber = `${targetNumber}@s.whatsapp.net`;
-            
-                // Memuat data user dari file user.json
-                let users = JSON.parse(fs.readFileSync(userDatabasePath));
-            
-                // Mendapatkan nomor pengirim lengkap dengan domain
-                let pengirim = from; // Nomor pengirim
-            
-                // Memeriksa apakah pengirim terdaftar di database
-                if (!users[pengirim]) {
-                    // Jika pengirim tidak terdaftar, buat entri baru dengan saldo awal (misal 0)
-                    users[pengirim] = {
-                        saldo: 0,
-                        limit: 0,
-                        timestamp: new Date().toISOString()
-                    };
-                    reply(`Pengirim tidak terdaftar. Akun baru telah dibuat dengan saldo awal Rp.0.`);
-                }
-            
-                // Memeriksa apakah penerima terdaftar di database
-                if (!users[fullTargetNumber]) {
-                    // Jika penerima tidak terdaftar, buat entri baru dengan saldo awal
-                    users[fullTargetNumber] = {
-                        saldo: 0,
-                        limit: 0,
-                        timestamp: new Date().toISOString()
-                    };
-                    reply(`Penerima tidak terdaftar. Akun baru telah dibuat dengan saldo awal Rp.0.`);
-                }
-            
-                // Mendapatkan saldo pengirim dan penerima
-                let saldoPengirim = users[pengirim].saldo;
-                let saldoPenerima = users[fullTargetNumber].saldo;
-            
-                // Memastikan pengirim memiliki saldo yang cukup
-                if (saldoPengirim < jumlahTransfer) return reply('Saldo kamu tidak mencukupi untuk melakukan transfer.');
-            
-                // Proses transfer
-                users[pengirim].saldo -= jumlahTransfer; // Mengurangi saldo pengirim
-                users[fullTargetNumber].saldo += jumlahTransfer; // Menambah saldo penerima
-            
-                // Menyimpan perubahan ke database
-                fs.writeFileSync(userDatabasePath, JSON.stringify(users, null, 2));
-            
-                // Mengirimkan respon sukses
-                reply(`Memindahkan saldo pengirim sebesar ${jumlahTransfer} kepada ${targetNumber}`);
-            
-                // Mengirim pesan kepada penerima
-                const senderName = pengirim.split('@')[0]; // Mendapatkan nama pengirim tanpa domain
-                const messageToReceiver = `Hai, kamu mendapatkan kiriman dari ${senderName} sebesar Rp.${jumlahTransfer}.`;
-                await sock.sendMessage(fullTargetNumber, { text: messageToReceiver }); // Mengirimkan pesan ke penerima
-            
-                break;
-        }
+       
         case 'kirimpesan': { 
             let nomor  = args[0];
 
@@ -668,51 +258,7 @@ const coin = cekCoin(from);
             console.log(nomor + pesan)
         }
         break;
-        case 'topuplimit': {
-                // Ambil nomor pengirim
-                let sender = from;  // Menggunakan 'from' untuk mengambil nomor pengirim
-                
-                // Ambil isi pesan (contoh: 'topuplimit 100')
-                let args = commandText.split(' '); // Memisahkan kata di pesan
-                let jumlahLimit = parseInt(args[1]); // Jumlah limit yang di-top up
-                
-                // Cek apakah jumlahLimit valid
-                if (isNaN(jumlahLimit) || jumlahLimit <= 0) {
-                    return reply('Hai Harga TopUp Limit saat ini seharga Rp.10/limit\n\nKetik TopUpLimit (jumlah limit yang ingin dibeli) dengan jumlah yang positif!');
-                }
-                
-                // Biaya setiap limit adalah 10 saldo, jadi total biaya
-                let biaya = jumlahLimit * 10;
-                
-                // Load database
-                let users = JSON.parse(fs.readFileSync(userDatabasePath)); // Menggunakan userDatabasePath yang sudah ada
-                
-                // Cek apakah pengguna ada di database
-                if (!users[sender]) return reply('Kamu belum terdaftar di database!');
-                
-                let user = users[sender];
-                
-                // Cek apakah saldo cukup
-                if (user.saldo < biaya) {
-                    return reply(`Saldo kamu tidak cukup! Kamu membutuhkan ${biaya} saldo untuk top up limit ${jumlahLimit}.`);
-                }
-                
-                // Kurangi saldo dan tambahkan limit
-                user.saldo -= biaya;
-                user.limit += jumlahLimit;
-                
-                // Simpan perubahan ke database
-                fs.writeFileSync(userDatabasePath, JSON.stringify(users, null, 2));
-                
-                // Kirim respons ke pengguna
-                reply(`Limit telah ditambah ${jumlahLimit} pada akun kamu dan kamu kehilangan saldo Rp.${biaya} untuk TopUp ini.\n\nLimit kamu sekarang: ${user.limit}\nDan saldomu sekarang Rp.${user.saldo}`);
-                
-                process.exit();
-                // Restart bot (gunakan cara yang sesuai)
-                // Atau gunakan metode restart yang sesuai
-                break;
-                
-        }
+       
         case 'ai': {
     const fetchAIResponse = async (text) => {
         try {

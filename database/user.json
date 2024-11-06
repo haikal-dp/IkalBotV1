@@ -11,8 +11,17 @@
   {
     "jid": "status@broadcast",
     "firstInteraction": "2024-11-04T17:12:20.059Z",
-    "lastInteraction": "2024-11-05T04:03:51.307Z",
-    "messageCount": 6,
+    "lastInteraction": "2024-11-06T09:29:58.352Z",
+    "messageCount": 24,
+    "coin": 0,
+    "saldo": 0,
+    "limit": 100
+  },
+  {
+    "jid": "6285172207018@s.whatsapp.net",
+    "firstInteraction": "2024-11-05T07:08:21.488Z",
+    "lastInteraction": "2024-11-05T08:03:12.807Z",
+    "messageCount": 92,
     "coin": 0,
     "saldo": 0,
     "limit": 100
