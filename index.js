@@ -1,16 +1,10 @@
-const prefixes = ['.', '#', '@']; // Daftar prefix yang diizinkan
+const { modul } = require('./database/lib/module')
+const {axios, path, fs,pino, process} = modul
+const {notifyOwner,handleNewUser,handleGroupMessage} = require ('./database/lib/fungsi')
 let menu = require('./menu'); // Menggunakan let agar bisa di-reassign
-const makeWASocket = require('@whiskeysockets/baileys').default;
-const { useMultiFileAuthState, downloadMediaMessage } = require('@whiskeysockets/baileys');
-const P = require('pino');
-const fs = require('fs');
-const path = require('path');
-
+const { makeWASocket,useMultiFileAuthState, downloadMediaMessage } = require('@whiskeysockets/baileys');
 // Konfigurasi logger untuk menghilangkan output pino dari console
-const logger = P({ level: 'silent' });
-const groupDatabasePath = path.join(__dirname, 'database', 'group.json');
-const userDatabasePath = path.join(__dirname, 'database', 'user.json');
-const roleDatabasePath = path.join(__dirname, 'database', 'role.json');
+const logger = pino({ level: 'silent' });
 
 
 const fotoPath = './database/foto';
@@ -18,13 +12,7 @@ if (!fs.existsSync(fotoPath)){
     fs.mkdirSync(fotoPath, { recursive: true });
 }
 
-// Fungsi untuk memberi tahu pemilik bot tentang error
-const notifyOwner = async (sock, error) => {
-    const roleData = fs.existsSync(roleDatabasePath) ? JSON.parse(fs.readFileSync(roleDatabasePath)) : { owners: [] };
-    for (const owner of roleData.owners) {
-        await sock.sendMessage(owner, { text: `Error: ${error}` });
-    }
-};
+
 let sock;
 //const sock = require ('./database/lib/myfunc')
 // Fungsi utama untuk memulai bot
@@ -46,104 +34,8 @@ async function startBot() {
             await handleMenu(sock, from, commandText); // Panggil dengan benar
         }
     });
-// Fungsi untuk memeriksa dan menyimpan user baru
-const handleNewUser = async (sock, userJid) => {
-    try {
-        // Baca database user yang ada
-        let users = [];
-        if (fs.existsSync(userDatabasePath)) {
-            users = JSON.parse(fs.readFileSync(userDatabasePath));
-        }
 
-        // Cek apakah user sudah ada di database
-        const userExists = users.some(user => user.jid === userJid);
 
-        if (!userExists) {
-            // Jika user baru, tambahkan ke database
-            const newUser = {
-                jid: userJid,
-                firstInteraction: new Date().toISOString(),
-                lastInteraction: new Date().toISOString(),
-                messageCount: 1
-            };
-
-            users.push(newUser);
-
-            // Simpan ke file database
-            fs.writeFileSync(userDatabasePath, JSON.stringify(users, null, 2));
-
-            // Kirim pesan selamat datang
-            await sock.sendMessage(userJid, { 
-                text: `Selamat datang! 👋\nTerimakasih telah menghubungi bot ini.\nKetik .menu untuk melihat daftar perintah yang tersedia.` 
-            });
-
-            console.log(`User baru tersimpan: ${userJid}`);
-        } else {
-            // Update lastInteraction dan messageCount untuk user yang sudah ada
-            users = users.map(user => {
-                if (user.jid === userJid) {
-                    return {
-                        ...user,
-                        lastInteraction: new Date().toISOString(),
-                        messageCount: (user.messageCount || 0) + 1,
-                        coin : 0,
-                        saldo: 0,
-                        limit: 100
-                    };
-                }
-                return user;
-            });
-
-            // Simpan perubahan ke file
-            fs.writeFileSync(userDatabasePath, JSON.stringify(users, null, 2));
-        }
-    } catch (error) {
-        console.error('Error handling new user:', error);
-        await notifyOwner(sock, `Error handling new user: ${error.message}`);
-    }
-};
-const handleGroupMessage = async (sock, groupJid, senderJid) => {
-    try {
-        // Baca database grup yang ada
-        let groups = [];
-        if (fs.existsSync(groupDatabasePath)) {
-            groups = JSON.parse(fs.readFileSync(groupDatabasePath));
-        }
-
-        // Cek apakah grup sudah ada di database
-        let group = groups.find(g => g.jid === groupJid);
-
-        if (!group) {
-            // Jika grup baru, tambahkan ke database
-            const groupInfo = await sock.groupMetadata(groupJid);
-            group = {
-                jid: groupJid,
-                name: groupInfo.subject,
-                firstInteraction: new Date().toISOString(),
-                lastInteraction: new Date().toISOString(),
-                messageCount: 1,
-                members: groupInfo.participants.map(p => p.id),
-                activeMembers: [senderJid]
-            };
-            groups.push(group);
-        } else {
-            // Update informasi grup yang sudah ada
-            group.lastInteraction = new Date().toISOString();
-            group.messageCount++;
-            if (!group.activeMembers.includes(senderJid)) {
-                group.activeMembers.push(senderJid);
-            }
-        }
-
-        // Simpan ke file database
-        fs.writeFileSync(groupDatabasePath, JSON.stringify(groups, null, 2));
-
-        console.log(`Informasi grup diperbarui: ${groupJid}`);
-    } catch (error) {
-        console.error('Error handling group message:', error);
-        await notifyOwner(sock, `Error handling group message: ${error.message}`);
-    }
-};
     sock.ev.on('messages.upsert', async (msg) => {
         try {
             const message = msg.messages[0];

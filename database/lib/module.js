@@ -1,3 +1,5 @@
+
+
 module.exports = {
 modul: {
 	axios: require('axios'),
