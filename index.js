@@ -14,9 +14,6 @@ if (!fs.existsSync(fotoPath)){
 
 
 let sock;
-//const sock = require ('./database/lib/myfunc')
-// Fungsi utama untuk memulai bot
-
 async function startBot() {
    
     const { state, saveCreds } = await useMultiFileAuthState('./session');
@@ -47,6 +44,7 @@ async function startBot() {
         const isGroup = from.endsWith('@g.us');
 
         if (isGroup) {
+            const sender = message.key.participant || message.key.remoteJid;
             // Jika pesan dari grup, panggil handleGroupMessage
             await handleGroupMessage(sock, from, sender);
         } else {

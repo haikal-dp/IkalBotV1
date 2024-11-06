@@ -2,8 +2,8 @@
   {
     "jid": "6285173229118@s.whatsapp.net",
     "firstInteraction": "2024-11-04T13:10:22.435Z",
-    "lastInteraction": "2024-11-04T16:42:47.084Z",
-    "messageCount": 40,
+    "lastInteraction": "2024-11-06T14:36:46.643Z",
+    "messageCount": 48,
     "coin": 0,
     "saldo": 0,
     "limit": 100
@@ -25,5 +25,11 @@
     "coin": 0,
     "saldo": 0,
     "limit": 100
+  },
+  {
+    "jid": "120363333754784062@g.us",
+    "firstInteraction": "2024-11-06T14:42:46.183Z",
+    "lastInteraction": "2024-11-06T14:42:46.183Z",
+    "messageCount": 1
   }
 ]
