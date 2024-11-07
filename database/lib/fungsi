@@ -1,6 +1,4 @@
-
-const {axios, path, fs,pino, process} = require('../../database/lib/module')
-
+const fs = require('fs');
 const {groupDatabasePath,userDatabasePath,roleDatabasePath} = require('./savedata')
 
 // Fungsi untuk memberi tahu pemilik bot tentang error
