@@ -3,15 +3,62 @@
     "jid": "120363333754784062@g.us",
     "name": "Notif komen",
     "firstInteraction": "2024-11-06T15:57:23.296Z",
-    "lastInteraction": "2024-11-06T15:57:23.296Z",
-    "messageCount": 1,
+    "lastInteraction": "2024-11-07T06:26:07.350Z",
+    "messageCount": 3,
     "members": [
       "6285172207018@s.whatsapp.net",
       "6285173229118@s.whatsapp.net",
       "639380859380@s.whatsapp.net"
     ],
     "activeMembers": [
-      "6285172207018@s.whatsapp.net"
+      "6285172207018@s.whatsapp.net",
+      "639380859380@s.whatsapp.net",
+      "120363333754784062@g.us"
+    ]
+  },
+  {
+    "jid": "120363334817188660@g.us",
+    "name": "Notif likes",
+    "firstInteraction": "2024-11-07T06:25:37.257Z",
+    "lastInteraction": "2024-11-07T06:36:12.814Z",
+    "messageCount": 55,
+    "members": [
+      "6285172207018@s.whatsapp.net",
+      "6285173229118@s.whatsapp.net",
+      "639380859380@s.whatsapp.net"
+    ],
+    "activeMembers": [
+      "639380859380@s.whatsapp.net"
+    ]
+  },
+  {
+    "jid": "120363336894802532@g.us",
+    "name": "Notif join",
+    "firstInteraction": "2024-11-07T06:27:24.226Z",
+    "lastInteraction": "2024-11-07T06:35:53.879Z",
+    "messageCount": 19,
+    "members": [
+      "6285172207018@s.whatsapp.net",
+      "6285173229118@s.whatsapp.net",
+      "639380859380@s.whatsapp.net"
+    ],
+    "activeMembers": [
+      "639380859380@s.whatsapp.net"
+    ]
+  },
+  {
+    "jid": "120363334577871397@g.us",
+    "name": "Notif Views Now",
+    "firstInteraction": "2024-11-07T06:27:54.397Z",
+    "lastInteraction": "2024-11-07T06:35:54.652Z",
+    "messageCount": 29,
+    "members": [
+      "6285172207018@s.whatsapp.net",
+      "6285173229118@s.whatsapp.net",
+      "639380859380@s.whatsapp.net"
+    ],
+    "activeMembers": [
+      "639380859380@s.whatsapp.net"
     ]
   }
 ]

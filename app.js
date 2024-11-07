@@ -7,15 +7,15 @@ const axios = require('axios');  // Tambahkan axios
 const port = process.env.PORT || 9999;
 
 app.use(express.json({ limit: '10mb' }));
-let sock; // Variabel global untuk menyimpan sock
+let sock1; // Variabel global untuk menyimpan sock1
 
 // Middleware untuk parsing form data
 app.use(express.urlencoded({ extended: true }));
 
 
-// Mulai bot dan simpan sock
+// Mulai bot dan simpan sock1
 startBot().then((result) => {
-    sock = result.sock; // Ambil sock dari hasil startBot
+    sock1 = result.sock1; // Ambil sock1 dari hasil startBot
     console.log('Telah Tersambung Pada Server Express');
 }).catch((err) => {
     console.error('Gagal memulai bot:', err);
@@ -34,8 +34,8 @@ app.post('/kirimpesan', async (req, res) => {
     }
 
     try {
-        // Kirim pesan menggunakan sock
-        await sock.sendMessage(nomor + '@s.whatsapp.net', { text: pesan });
+        // Kirim pesan menggunakan sock1
+        await sock1.sendMessage(nomor + '@s.whatsapp.net', { text: pesan });
         res.send({ status: 'Pesan berhasil dikirim!' });
         console.log('Pesan dikirim')
     } catch (err) {
@@ -49,16 +49,16 @@ app.post('/tiktok', async (req, res) => {
 
     try {
         if (komen) {
-            await sock.sendMessage('120363333754784062@g.us', { text: `TIKTOK LIVE :\n\n${who} (userId: ${whoid})\nberkomentar: ${komen}` });
+            await sock1.sendMessage('120363333754784062@g.us', { text: `TIKTOK LIVE :\n\n${who} (userId: ${whoid})\nberkomentar: ${komen}` });
         }
         if (join) {
-            await sock.sendMessage('120363336894802532@g.us', { text: `TIKTOK LIVE :\n\n${join} bergabung ke dalam live` });
+            await sock1.sendMessage('120363336894802532@g.us', { text: `TIKTOK LIVE :\n\n${join} bergabung ke dalam live` });
         }
         if (totalL) {
-            await sock.sendMessage('120363334817188660@g.us', { text: `TIKTOK LIVE :\n\n${whoL} mengirim like sebanyak ${like}\n\nTotal Likes: ${totalL}` });
+            await sock1.sendMessage('120363334817188660@g.us', { text: `TIKTOK LIVE :\n\n${whoL} mengirim like sebanyak ${like}\n\nTotal Likes: ${totalL}` });
         }
         if (viewc) {
-            await sock.sendMessage('120363334577871397@g.us', { text: `TIKTOK LIVE :\n\nTotal Views Now: ${viewc}` });
+            await sock1.sendMessage('120363334577871397@g.us', { text: `TIKTOK LIVE :\n\nTotal Views Now: ${viewc}` });
         }
 
         // Menyiapkan data untuk dikirim ke server haikung.my.id
