@@ -2,7 +2,19 @@
   {
     "jid": "6285173229118@s.whatsapp.net",
     "firstInteraction": "2024-11-06T14:17:02.911Z",
-    "lastInteraction": "2024-11-06T14:18:08.444Z",
-    "messageCount": 6
+    "lastInteraction": "2024-11-07T09:02:48.128Z",
+    "messageCount": 12
+  },
+  {
+    "jid": "6285172207018@s.whatsapp.net",
+    "firstInteraction": "2024-11-07T07:51:34.986Z",
+    "lastInteraction": "2024-11-07T08:40:20.006Z",
+    "messageCount": 30
+  },
+  {
+    "jid": "status@broadcast",
+    "firstInteraction": "2024-11-07T08:07:50.914Z",
+    "lastInteraction": "2024-11-07T08:33:01.350Z",
+    "messageCount": 3
   }
 ]

@@ -56,7 +56,16 @@ function setupEventListeners(sock, saveCreds, sockId) {
             const from = message.key.remoteJid;
             const textMessage = message.message.conversation || message.message.extendedTextMessage?.text || '';
             const isGroup = from.endsWith('@g.us');
-
+            try {
+                await axios.post('http://localhost:9999/api/logs', {
+                    from: from,
+                    message: textMessage,
+                    sockId: sockId,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (error) {
+                console.error('Gagal mengirim log ke server:', error);
+            }
             if (isGroup) {
                 const sender = message.key.participant || message.key.remoteJid;
                 await handleGroupMessage(sock, from, sender);

@@ -8,7 +8,8 @@ const port = process.env.PORT || 9999;
 
 app.use(express.json({ limit: '10mb' }));
 let sock1; // Variabel global untuk menyimpan sock1
-
+// Di bagian atas app.js
+let messageLogs = [];
 // Middleware untuk parsing form data
 app.use(express.urlencoded({ extended: true }));
 
@@ -24,7 +25,24 @@ startBot().then((result) => {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.get('/logs', (req, res) => {
+    res.render('logs', { messages: messageLogs });
+});
 
+// Endpoint API untuk mendapatkan logs dalam format JSON
+app.get('/api/logs', (req, res) => {
+    res.json(messageLogs);
+});
+
+// Endpoint untuk menerima logs baru
+app.post('/api/logs', (req, res) => {
+    const { from, message, sockId, timestamp } = req.body;
+    messageLogs.unshift({ from, message, sockId, timestamp }); // Menambah log baru di awal array
+    if (messageLogs.length > 100) { // Batasi jumlah log yang disimpan
+        messageLogs = messageLogs.slice(0, 100);
+    }
+    res.json({ success: true });
+});
 // Endpoint untuk mengirim pesan
 app.post('/kirimpesan', async (req, res) => {
     const { nomor, pesan } = req.body;
