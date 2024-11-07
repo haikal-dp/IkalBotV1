@@ -1,4 +1,7 @@
 node_modules/
 baileys/
 session/
-database/user.json
+database/user.json/
+session1/
+session2/
+package-lock.json/

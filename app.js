@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 // Mulai bot dan simpan sock
 startBot().then((result) => {
     sock = result.sock; // Ambil sock dari hasil startBot
-    console.log('Bot berhasil dijalankan');
+    console.log('Telah Tersambung Pada Server Express');
 }).catch((err) => {
     console.error('Gagal memulai bot:', err);
 });

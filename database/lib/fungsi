@@ -1,5 +1,5 @@
-const { modul } = require('../../database/lib/module')
-const {axios, path, fs,pino, process} = modul
+
+const {axios, path, fs,pino, process} = require('../../database/lib/module')
 
 const {groupDatabasePath,userDatabasePath,roleDatabasePath} = require('./savedata')
 

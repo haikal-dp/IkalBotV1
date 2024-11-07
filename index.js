@@ -6,32 +6,47 @@ const { makeWASocket,useMultiFileAuthState, downloadMediaMessage } = require('@w
 // Konfigurasi logger untuk menghilangkan output pino dari console
 const logger = pino({ level: 'silent' });
 
-
 const fotoPath = './database/foto';
 if (!fs.existsSync(fotoPath)){
     fs.mkdirSync(fotoPath, { recursive: true });
 }
 
+let sock1, sock2;
 
-let sock;
 async function startBot() {
+    const { state: state1, saveCreds: saveCreds1 } = await useMultiFileAuthState('./session1');
+    const { state: state2, saveCreds: saveCreds2 } = await useMultiFileAuthState('./session2');
    
-    const { state, saveCreds } = await useMultiFileAuthState('./session');
-   
-     sock = makeWASocket({
-        auth: state,
+    sock1 = makeWASocket({
+        auth: state1,
         logger: logger
     });
     
+    sock2 = makeWASocket({
+        auth: state2,
+        logger: logger
+    });
+    
+    // Setup event listeners for sock1
+    setupEventListeners(sock1, saveCreds1, '1');
+    
+    // Setup event listeners for sock2
+    setupEventListeners(sock2, saveCreds2, '2');
+
+    console.log('Menjalankan bot (proses loading)...');
+    return { sock1, sock2 };
+}
+
+function setupEventListeners(sock, saveCreds, sockId) {
     sock.ev.on('creds.update', saveCreds);
+
     sock.ev.on('message-new', async (m) => {
         if (m.message && m.message.conversation) {
             const commandText = m.message.conversation;
-            const from = m.key.remoteJid; // Ambil remoteJid dari pesan
-            await handleMenu(sock, from, commandText); // Panggil dengan benar
+            const from = m.key.remoteJid;
+            await handleMenu(sock, from, commandText);
         }
     });
-
 
     sock.ev.on('messages.upsert', async (msg) => {
         try {
@@ -40,44 +55,34 @@ async function startBot() {
 
             const from = message.key.remoteJid;
             const textMessage = message.message.conversation || message.message.extendedTextMessage?.text || '';
-             // Cek apakah pesan dari grup atau chat pribadi
-        const isGroup = from.endsWith('@g.us');
+            const isGroup = from.endsWith('@g.us');
 
-        if (isGroup) {
-            const sender = message.key.participant || message.key.remoteJid;
-            // Jika pesan dari grup, panggil handleGroupMessage
-            await handleGroupMessage(sock, from, sender);
-        } else {
-            // Jika pesan pribadi, panggil handleNewUser
-            await handleNewUser(sock, from);
-        }
-            await handleNewUser(sock, from);
+            if (isGroup) {
+                const sender = message.key.participant || message.key.remoteJid;
+                await handleGroupMessage(sock, from, sender);
+            } else {
+                await handleNewUser(sock, from);
+            }
             
             if (message.message.imageMessage) {
-                // Mendownload media gambar sebagai buffer
                 const buffer = await downloadMediaMessage(message, 'buffer', {});
-
-                // Pastikan buffer adalah tipe data yang benar
                 if (Buffer.isBuffer(buffer)) {
-                    // Simpan gambar ke dalam folder ./database/foto
-                    const fileName = `${fotoPath}/${Date.now()}.jpg`;
+                    const fileName = `${fotoPath}/${Date.now()}_${sockId}.jpg`;
                     fs.writeFileSync(fileName, buffer);
                     console.log(`Foto dari ${from} telah disimpan di: ${fileName}`);
                 } else {
                     console.error('Download media gagal, tidak menerima buffer yang valid.');
                 }
             }
-            // Cetak pesan ke konsol
-            console.log(`Pesan masuk dari ${from}: ${textMessage}`);
+            
+            console.log(`Pesan masuk dari ${from} (Sock ${sockId}): ${textMessage}`);
 
-            // Auto-read pesan
-            await sock.readMessages([message.key]);
-            //balas pesan
+            //await sock.readMessages([message.key]);
             await menu.handleMenu(sock, from, textMessage);
             
         } catch (error) {
-            console.error('Terjadi error:', error);
-            await notifyOwner(sock, error); // Notifikasi error ke owner
+            console.error(`Terjadi error pada Sock ${sockId}:`, error);
+            await notifyOwner(sock, error);
         }
     });
 
@@ -86,28 +91,25 @@ async function startBot() {
 
         if (connection === 'close') {
             const shouldReconnect = lastDisconnect.error?.output?.statusCode !== 401;
-            console.log('Koneksi terputus, mencoba menyambung kembali...', shouldReconnect);
+            console.log(`Koneksi terputus untuk Sock ${sockId}, mencoba menyambung kembali...`, shouldReconnect);
             if (shouldReconnect) startBot();
         } else if (connection === 'open') {
-            console.log('Bot telah aktif sepenuhnya');
+            console.log(`Bot Sock ${sockId} telah aktif sepenuhnya`);
         }
     });
-    // Fungsi untuk mengirim pesan
-async function kirimPesan(nomor, pesan) {
-    const id = nomor.includes('@s.whatsapp.net') ? nomor : nomor + '@s.whatsapp.net'; // Format ID nomor
+}
+
+// Fungsi untuk mengirim pesan
+async function kirimPesan(sock, nomor, pesan) {
+    const id = nomor.includes('@s.whatsapp.net') ? nomor : nomor + '@s.whatsapp.net';
     await sock.sendMessage(id, { text: pesan });
     console.log(`Pesan terkirim ke ${nomor}`);
 }
 
-module.exports = { kirimPesan };
-console.log('Menjalankan bot (proses loading)...');
-return { sock }; 
-}
-
 // Fungsi untuk memuat ulang menu.js
 const reloadMenu = () => {
-    delete require.cache[require.resolve('./menu')]; // Hapus cache dari menu
-    menu = require('./menu'); // Reload menu.js
+    delete require.cache[require.resolve('./menu')];
+    menu = require('./menu');
     console.log('menu.js berhasil di-reload.');
 };
 
@@ -115,7 +117,7 @@ const reloadMenu = () => {
 fs.watch(path.join(__dirname, 'menu.js'), (eventType, filename) => {
     if (filename) {
         console.log(`menu.js telah diperbarui (${eventType}). Memuat ulang...`);
-        reloadMenu(); // Memanggil fungsi reloadMenu
+        reloadMenu();
     }
 });
 
@@ -123,9 +125,8 @@ fs.watch(path.join(__dirname, 'menu.js'), (eventType, filename) => {
 fs.watch(path.join(__dirname, 'index.js'), (eventType, filename) => {
     if (filename) {
         console.log(`index.js diperbarui (${eventType}).`);
-        // Reload index.js jika diperlukan, meskipun ini tidak umum dilakukan
         delete require.cache[require.resolve('./index')];
     }
 });
 
-module.exports = { startBot };
+module.exports = { startBot, kirimPesan };

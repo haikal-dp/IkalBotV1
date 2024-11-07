@@ -1,1 +1,35 @@
-[]
+[
+  {
+    "jid": "6285173229118@s.whatsapp.net",
+    "firstInteraction": "2024-11-04T13:10:22.435Z",
+    "lastInteraction": "2024-11-06T15:31:53.642Z",
+    "messageCount": 49,
+    "coin": 0,
+    "saldo": 0,
+    "limit": 100
+  },
+  {
+    "jid": "status@broadcast",
+    "firstInteraction": "2024-11-04T17:12:20.059Z",
+    "lastInteraction": "2024-11-06T18:05:30.502Z",
+    "messageCount": 38,
+    "coin": 0,
+    "saldo": 0,
+    "limit": 100
+  },
+  {
+    "jid": "6285172207018@s.whatsapp.net",
+    "firstInteraction": "2024-11-05T07:08:21.488Z",
+    "lastInteraction": "2024-11-06T17:03:33.431Z",
+    "messageCount": 98,
+    "coin": 0,
+    "saldo": 0,
+    "limit": 100
+  },
+  {
+    "jid": "120363333754784062@g.us",
+    "firstInteraction": "2024-11-06T14:42:46.183Z",
+    "lastInteraction": "2024-11-06T14:42:46.183Z",
+    "messageCount": 1
+  }
+]
