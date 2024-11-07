@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Grass effect at the bottom */
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30vh; /* Adjust height as needed */
+            background: linear-gradient(to top, #00008B, transparent);
+            z-index: 1;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .error-code {
+            font-size: clamp(72px, 15vw, 150px); /* Responsive font size */
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #1e90ff;
+            text-shadow: 0 0 10px rgba(30, 144, 255, 0.5);
+        }
+        
+        .error-message {
+            font-size: clamp(18px, 4vw, 24px); /* Responsive font size */
+            margin-bottom: 40px;
+            color: #ffffff;
+            text-align: center;
+        }
+        
+        .button {
+            background-color: #1e90ff;
+            color: #fff;
+            padding: clamp(10px, 2vw, 12px) clamp(20px, 4vw, 24px);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: clamp(16px, 3vw, 18px);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .button:hover {
+            background-color: #1c7cd6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 144, 255, 0.3);
+        }
+        
+        @keyframes animate {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .animate {
+            animation: animate 2s infinite;
+        }
+
+        /* Stars effect */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            body::after {
+                height: 20vh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            body::after {
+                height: 15vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="container">
+        <div class="error-code animate">404</div>
+        <div class="error-message">cari apa Loe?</div>
+        <a href="/" class="button">Go Back Home</a>
+    </div>
+    
+    <script>
+        // Add animation to the error code
+        const errorCode = document.querySelector('.error-code');
+        errorCode.classList.add('animate');
+
+        // Create stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 100;
+
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random position
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                
+                // Random animation duration
+                const duration = 0.5 + Math.random() * 2;
+                
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.setProperty('--duration', `${duration}s`);
+                
+                starsContainer.appendChild(star);
+            }
+        }
+
+        createStars();
+    </script>
+</body>
+</html>

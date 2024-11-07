@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Page</title>
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body class="bg-gray-900 text-white">
+    <div id="app"></div>
+    <script type="text/babel">
+        const { useState } = React;
+        const username = '<%= username %>';
+        const saldo = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(<%= balance %>);
+
+        const App = () => {
+            const [category, setCategory] = useState('all');
+            const [sidebarOpen, setSidebarOpen] = useState(false);
+
+            const boxes = [
+                { id: 1, category: 'casino', title: 'FLIP COIN', bet: '1000', time: '', status: 'open', link: '/flip-coin' },
+                // Add more boxes as needed
+            ];
+
+            const filteredBoxes = category === 'all' ? boxes : boxes.filter(box => box.category === category);
+
+            return (
+                <div className="relative">
+                    {/* Overlay untuk Mobile */}
+                    <div className={`fixed inset-0 bg-gray-800 bg-opacity-75 z-40 ${sidebarOpen ? 'block' : 'hidden'} sm:hidden`} onClick={() => setSidebarOpen(false)}></div>
+
+                    {/* Sidebar */}
+                    <div className={`fixed inset-y-0 left-0 w-64 bg-gray-900 z-50 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} sm:translate-x-0 sm:block transition-transform duration-300 ease-in-out`}>
+                        <div className="p-4 bg-gradient-to-b from-blue-900 to-purple-900 text-white h-full">
+                            <h2 className="text-2xl font-bold mb-6 text-center text-yellow-300">Menu</h2>
+                            <ul>
+                                <li className="mb-4"><a href="/home" className="flex items-center p-3 bg-blue-800 rounded-lg hover:bg-blue-700 transition duration-200"><i className="fas fa-home mr-3 text-yellow-300"></i>Home</a></li>
+                                <li className="mb-4"><a href="/deposit" className="flex items-center p-3 bg-green-800 rounded-lg hover:bg-green-700 transition duration-200"><i className="fas fa-money-bill-wave mr-3 text-yellow-300"></i>Deposit</a></li>
+                                <li className="mb-4"><a href="/withdraw" className="flex items-center p-3 bg-red-800 rounded-lg hover:bg-red-700 transition duration-200"><i className="fas fa-money-check-alt mr-3 text-yellow-300"></i>Withdraw</a></li>
+                                <li className="mb-4"><a href="/ change-password" className="flex items-center p-3 bg-yellow-700 rounded-lg hover:bg-yellow-600 transition duration-200"><i className="fas fa-key mr-3 text-blue-900"></i>Change Password</a></li>
+                                <li className="mb-4"><a href="/howtoplay" className="flex items-center p-3 bg-purple-800 rounded-lg hover:bg-purple-700 transition duration-200"><i className="fas fa-book mr-3 text-yellow-300"></i>Cara Bermain</a></li>
+                                <li className="mb-4"><a href="/rules" className="flex items-center p-3 bg-teal-800 rounded-lg hover:bg-teal-700 transition duration-200"><i className="fas fa-gavel mr-3 text-yellow-300"></i>Peraturan</a></li>
+                                <li className="mb-4"><a href="/logout" className="flex items-center p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-200"><i className="fas fa-sign-out-alt mr-3 text-red-500"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <div className="p-4 sm:ml-64">
+                        <div className="flex justify-between items-center mb-4">
+                            <button onClick={() => setSidebarOpen(true)} className="text-white sm:hidden">
+                                <i className="fas fa-bars"></i>
+                            </button>
+                            <button className="bg-yellow-500 text-black px-4 py-2 rounded">Deposit</button>
+                        </div>
+                        
+                        {/* Logo */}
+                        <div className="flex justify-center items-center mb-6">
+                            <img src="https://placehold.co/100x40?text=Logo" alt="Logo" className="h-10"/>
+                        </div>
+                        
+                        {/* User Info */}
+                        <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div>
+                                <div className="text-lg font-bold">{username}</div>
+                                <div className="text-sm">Balance: <span className="text-white">IDR <span>{saldo}</span></span></div>
+                            </div>
+                        </div>
+
+                        {/* Categories */}
+                        <div className="flex flex-wrap justify-center sm:justify-between items-center mb-6 space-x-0">
+                            <button onClick={() => setCategory('all')} className="bg-blue-500 text-white px-4 py-2 rounded">Semua</button>
+                            <button onClick={() => setCategory('casino')} className="bg-blue-500 text-white px-4 py-2 rounded relative">Casino<span className="absolute top-0 right-0 bg-red-500 text-xs px-1 rounded">BARU</span></button>
+                            <button onClick={() => setCategory('togel')} className="bg-blue-500 text-white px-4 py-2 rounded">Togel</button>
+                        </div>
+
+                        {/* Search Bar */}
+                        <div className="mb-6">
+                            <input type="text" placeholder="Cari" className="w-full px-4 py-2 rounded bg-gray-800 text-white"/>
+                        </div>
+
+                        {/* Banner */}
+                        <div className="mb-8">
+                            <img src="https://placehold.co/300x100?text=Banner" alt="Banner" className="w-full rounded"/>
+                        </div>
+
+                        {/* Main Title */}
+                        <div className="text-lg font-bold mb-4">FUN GAMES</div>
+
+                        {/* Boxes Grid */}
+                        <div className="grid grid-cols-2 gap-4">
+                            {filteredBoxes.map(box => (
+                                <a key={box.id} href={box.link} className="bg-gray-800 p-4 rounded text-center hover:bg-gray-700 transition-colors duration-300">
+                                    <div className="text-yellow-500 text-xl">{box.title}</div>
+                                    <div className={`text-2xl ${box.status === 'closed' ? 'text-red-500' : 'text-green-500'}`}>
+                                        Min Bet : Rp.{box.bet}
+                                    </div>
+                                    <div className={`${box.status === 'closed' ? 'text-red-500' : 'text-green-500'}`}>
+                                        {box.time}
+                                    </div>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('app'));
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rules Page</title>
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div id="app"></div>
+    <script type="text/babel">
+        function App() {
+            return (
+                <div className="flex flex-col items-center p-4">
+                    <div className="w-full max-w-3xl bg-white shadow-md rounded-lg">
+                        <div className="p-4 text-sm md:text-base">
+                            <ol className="list-decimal list-inside space-y-3">
+                                <li>Minimal Anda Telah Berusia 18 Tahun Untuk Membuat Akun Dan Bermain Di Situs Togeltimur.</li>
+                                <li>Semua Bettingan Yang Telah Dibeli Adalah Sah Dan Tidak Bisa Dibatalkan. Bettingan Yang Sah Adalah Bettingan Yang Memiliki Data Dan Tampil Di Menu Transaksi. Untuk Pengecekan Kemenangan Betting Bisa Cek Di Menu Transaksi.</li>
+                                <li>Setiap Member Wajib Menjaga Kerahasiaan Account-Nya Masing-Masing.</li>
+                                <li>Setiap Taruhan Mencurigakan Atau Safety Bet Seperti Kiri Kanan Dan Semacamnya Akan Di Berikan Sanksi Sesuai Keputusan Pihak Togeltimur</li>
+                                <li>Kami Akan Melakukan Tindakan Tegas Terhadap Member Yang Melakukan Penipuan Deposit Berulang-Ulang Ataupun Telah Di Nyatakan Melakukan Permainan Yang Tidak Wajar Invest Togel Atau Safety Bet.</li>
+                                <li>Deposit Di Jam Offline Bank Atau Saat Bank Gangguan Di Wajibkan Menggunakan Nominal Unik Dan Di Sertai Bukti Transfer , Atau Akan Kami Proses Dalam 1x24 Jam Setelah Bank Normal Kembali.</li>
+                                <li>Demi Kenyamanan Bersama Kami Himbau Kepada Semua Member Untuk Mengecek Nomor Rekening Di Menu Deposit Sebelum Transfer.</li>
+                                <li>Batasan Line:
+                                    <ul className="list-disc list-inside ml-6 space-y-1">
+                                        <li>4d (1000 Line) Rp 10.000</li>
+                                        <li>3d (300 Line) Rp 50.000</li>
+                                        <li>2d (50 Line) Rp 300.000</li>
+                                    </ul>
+                                    Maksimal Pasang Shio dan colok bebas 2D 3 Jenis variasi Maksimal Bbfs Dan Angka Tarung Adalah 5 Digit Dan Maksimal 3 Kali Pembelian. (Jika Melewati Batasan Yang Sudah Ditentukan Bettingan Dianggap Tidak Sah)
+                                </li>
+                                <li>Dilarang Keras Menggunakan Vpn Kami Hanya Menerima IP Indonesia. Aktifitas Login Dengan Pergantian Ip Tidak Wajar Akun Dan Saldo Kami Blokir.</li>
+                                <li>Pengiriman Dari Rekening Lain (Edc, Link, Dan Dompet Digital Lainnya) Yang Tidak Menggunakan Nominal Unik Akan Kami Anggap Donatur, Dan Kami Tidak Melayani Keluhan Dalam Hal Ini. (Nominal Unik Menggunakan 3 Digit Belakang Rekening Id). Jika Nomor Rekening 1547845482, Maka Kode Yang Digunakan Adalah 100.482 Untuk Transfer Dengan Bank Lain.</li>
+                                <li>Pendaftaran Dengan Nomor Rekening/Ewallet Yang Di Kurangkan Dan Sengaja Di Salahken. Akun Dan Saldo Akan Kami Blokir.</li>
+                                <li>Semua Keputusan Togeltimur Adalah Sah Dan Tidak Dapat Diganggu Gugat, Setelah Anda Login Dan Telah Klik Setuju Maka Anda Sudah Bersedia Mengikuti Peraturan Bermain Yang Ada.</li>
+                            </ol>
+                        </div>
+                        <div className="flex flex-col md:flex-row justify-around p-4 bg-gray-100 space-y-3 md:space-y-0">
+                            <a href="/lobby" className="bg-blue-500 text-white px-6 py-2 rounded text-center w-full md:w-auto">Saya Setuju</a>
+                            <a href="/logout" className="bg-gray-500 text-white px-6 py-2 rounded text-center w-full md:w-auto">Saya Tidak Setuju</a>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('app'));
+    </script>
+</body>
+</html>

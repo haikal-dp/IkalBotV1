@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body class="bg-gray-800">
+    <div id="root"></div>
+    <script type="text/babel">
+        function App() {
+            return (
+                <div className="min-h-screen flex flex-col items-center justify-center p-6 sm:p-10">
+                    <div className="w-full max-w-md bg-gray-700 text-white p-8 sm:p-10 rounded-lg shadow-lg">
+                        <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
+                        <hr className="border-gray-500 mb-6"/>
+                        <form action="/daftar" method="POST">
+    <div class="mb-6">
+        <label class="block text-lg font-bold mb-2">Username <span class="text-red-500">*</span></label>
+        <input type="text" name="username" placeholder="Username" required class="w-full p-3 bg-gray-600 text-white text-lg rounded focus:outline-none focus:ring-2 focus:ring-orange-500"/>
+    </div>
+    <div class="mb-6">
+    <label class="block text-lg font-bold mb-2">Password <span class="text-red-500">*</span></label>
+    <input type="password" id="password" name="password" placeholder="Password" required 
+           class="w-full p-3 bg-gray-600 text-white text-lg rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
+           onInput="validatePassword()"/>
+    <p id="passwordError" class="text-red-500 mt-2 hidden">Password harus minimal 7 karakter, mengandung 1 huruf besar, dan 1 angka.</p>
+</div>
+    <div class="mb-6">
+        <label class="block text-lg font-bold mb-2">Email <span class="text-red-500">*</span></label>
+        <input type="email" name="email" placeholder="Alamat email anda" required class="w-full p-3 bg-gray-600 text-white text-lg rounded focus:outline-none focus:ring-2 focus:ring-orange-500"/>
+    </div>
+    <div class="mb-6">
+        <label class="block text-lg font-bold mb-2">No. Telp/HP <span class="text-red-500">*</span></label>
+        <div className="flex">
+    <span className="bg-orange-500 text-white px-5 py-3 rounded-l">+62</span>
+    <input type="text" name="telepon" placeholder="Nomor telepon anda" required
+           className="w-full p-3 bg-gray-600 text-white text-lg rounded-r focus:outline-none focus:ring-2 focus:ring-orange-500"
+           onInput={(e) => {
+               if (!e.target.value.startsWith("62")) {
+                   e.target.value = "62" + e.target.value;
+               }
+           }} />
+</div>
+
+    </div>
+    <hr class="border-gray-500 mb-6"/>
+    <h2 class="text-2xl font-bold mb-6 text-center">Pengaturan Bank</h2>
+    <div class="mb-6">
+        <label class="block text-lg font-bold mb-2">Nama Bank <span class="text-red-500">*</span></label>
+        <select name="bank_id" required class="w-full p-3 bg-gray-600 text-white text-lg rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+            <option value="1">Dana</option>
+            <option value="2">OVO</option>
+            <option value="3">Gopay</option>
+            <option value="4">ShopeePay</option>
+            <option value="5">SeaBank</option>
+            <option value="6">BRI</option>
+            <option value="7">BNI</option>
+            <option value="9">BTN</option>
+            <option value="10">Sinarmas</option>
+            <option value="11">Mandiri</option>
+        </select>
+    </div>
+    <div class="mb-6">
+        <label class="block text-lg font-bold mb-2">Nama Rekening <span class="text-red-500">*</span></label>
+        <input type="text" name="nama_rek" placeholder="Nama rekening anda" required class="w-full p-3 bg-gray-600 text-white text-lg rounded focus:outline-none focus:ring-2 focus:ring-orange-500"/>
+    </div>
+    <div class="mb-6">
+        <label class="block text-lg font-bold mb-2">Nomor Rekening <span class="text-red-500">*</span></label>
+        <input type="text" name="no_rek" placeholder="Nomor rekening" required class="w-full p-3 bg-gray-600 text-white text-lg rounded focus:outline-none focus:ring-2 focus:ring-orange-500"/>
+    </div>
+    <div class="mb-6">
+        <label class="inline-flex items-center">
+            <input type="checkbox" name="agree" required class="form-checkbox text-blue-500 focus:ring-2 focus:ring-orange-500"/>
+            <span class="ml-3 text-lg">Saya setuju dengan peraturan yang berlaku</span>
+        </label>
+    </div>
+    <button type="submit" class="w-full bg-orange-500 text-white p-3 rounded text-lg focus:outline-none focus:ring-2 focus:ring-orange-500">Daftar</button>
+
+    </form>
+    
+</div>
+
+                    <footer className="text-white text-center mt-6 text-sm">
+                        © Copyright 2014 - 2024 . All Rights Reserved.
+                    </footer>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+//password
+
+function validatePassword() {
+    const passwordInput = document.getElementById("password");
+    const passwordError = document.getElementById("passwordError");
+    const password = passwordInput.value;
+
+    // Cek syarat: minimal 7 karakter, 1 huruf besar, dan 1 angka
+    const isValidLength = password.length >= 7;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+
+    // Tampilkan pesan jika syarat tidak terpenuhi
+    if (isValidLength && hasUppercase && hasNumber) {
+        passwordError.classList.add("hidden");
+    } else {
+        passwordError.classList.remove("hidden");
+    }
+}
+    </script>
+    <!-- login.ejs -->
+<% if (error) { %>
+    <p class="text-red-500"><%= error %></p>
+<% } %>
+
+</body>
+</html>
