@@ -1,5 +1,6 @@
 const { modul } = require('./database/lib/module')
 const {axios, path, fs,pino, process} = modul
+require('./setting');
 const {notifyOwner,handleNewUser,handleGroupMessage} = require ('./database/lib/fungsi')
 let menu = require('./menu'); // Menggunakan let agar bisa di-reassign
 const { makeWASocket,useMultiFileAuthState, downloadMediaMessage } = require('@whiskeysockets/baileys');
@@ -57,13 +58,14 @@ function setupEventListeners(sock, saveCreds, sockId) {
             const textMessage = message.message.conversation || message.message.extendedTextMessage?.text || '';
             const isGroup = from.endsWith('@g.us');
             try {
-                await axios.post('https://latihan.haikung.my.id/api/logs', {
+                await axios.post(`${global.domain}/api/logs`, {
                     from: from,
                     message: textMessage,
                     sockId: sockId,
                     timestamp: new Date().toISOString()
                 });
-            } catch (error) {
+                console.log(global.domain)
+             } catch (error) {
                 console.error('Gagal mengirim log ke server:', error);
             }
             if (isGroup) {

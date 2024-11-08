@@ -2,19 +2,43 @@
   {
     "jid": "6285173229118@s.whatsapp.net",
     "firstInteraction": "2024-11-06T14:17:02.911Z",
-    "lastInteraction": "2024-11-07T09:02:48.128Z",
-    "messageCount": 12
+    "lastInteraction": "2024-11-07T15:54:56.501Z",
+    "messageCount": 14
   },
   {
     "jid": "6285172207018@s.whatsapp.net",
     "firstInteraction": "2024-11-07T07:51:34.986Z",
-    "lastInteraction": "2024-11-07T15:37:38.153Z",
-    "messageCount": 33
+    "lastInteraction": "2024-11-08T03:55:11.578Z",
+    "messageCount": 99
   },
   {
     "jid": "status@broadcast",
     "firstInteraction": "2024-11-07T08:07:50.914Z",
-    "lastInteraction": "2024-11-07T15:43:19.448Z",
+    "lastInteraction": "2024-11-08T04:19:44.869Z",
+    "messageCount": 13
+  },
+  {
+    "jid": "639380859380@s.whatsapp.net",
+    "firstInteraction": "2024-11-07T15:54:55.821Z",
+    "lastInteraction": "2024-11-08T02:55:37.806Z",
+    "messageCount": 9
+  },
+  {
+    "jid": "6285951514399@s.whatsapp.net",
+    "firstInteraction": "2024-11-08T02:46:01.057Z",
+    "lastInteraction": "2024-11-08T02:59:48.014Z",
+    "messageCount": 4
+  },
+  {
+    "jid": "6287860956273@s.whatsapp.net",
+    "firstInteraction": "2024-11-08T03:06:58.258Z",
+    "lastInteraction": "2024-11-08T03:34:50.870Z",
+    "messageCount": 4
+  },
+  {
+    "jid": "6281398062915@s.whatsapp.net",
+    "firstInteraction": "2024-11-08T03:11:05.821Z",
+    "lastInteraction": "2024-11-08T03:24:38.925Z",
     "messageCount": 5
   }
 ]

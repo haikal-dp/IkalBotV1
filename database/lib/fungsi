@@ -37,7 +37,7 @@ const handleNewUser = async (sock, userJid) => {
 
             // Kirim pesan selamat datang
             await sock.sendMessage(userJid, { 
-                text: `Selamat datang! 👋\nTerimakasih telah menghubungi bot ini.\nKetik .menu untuk melihat daftar perintah yang tersedia.` 
+                text: `Selamat datang 👋\n Terimakasih telah menghubungi saya, ada yang bisa saya bantu?` 
             });
 
             console.log(`User baru tersimpan: ${userJid}`);
