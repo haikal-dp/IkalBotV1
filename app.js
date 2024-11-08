@@ -21,7 +21,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'public'));
 
 let sock1;
-let sock2
+let sock2;
 startBot().then((result) => {
     sock1 = result.sock1;
     sock2 = result.sock2
@@ -29,16 +29,51 @@ startBot().then((result) => {
 }).catch((err) => {
     console.error('Gagal memulai bot:', err);
 });
-
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
     next();
 });
 
 app.use(secret);
-app.get('/'), (res,req) =>{
-    res.send('hallo')
-}
+const posts = [
+    { id: 1, title: 'Artikel Pertama', content: 'Ini adalah konten artikel pertama.' },
+];
+app.get('/', (req, res) => {
+    res.render('index', { posts: posts }); // Mengirim data posts ke template
+});
+// Middleware untuk melayani file statis (foto)
+app.use('/foto', express.static(path.join(__dirname, 'database/foto')));
+
+// Route untuk menampilkan daftar foto
+app.get('/foto', (req, res) => {
+    const fotoDir = path.join(__dirname, 'database/foto');
+    fs.readdir(fotoDir, (err, files) => {
+        if (err) {
+            return res.status(500).send('Error reading directory');
+        }
+
+        // Filter hanya file gambar
+        const fotoList = files.filter(file => {
+            return file.endsWith('.jpg') || file.endsWith('.png') || file.endsWith('.jpeg');
+        });
+
+        // Render halaman dengan daftar foto
+        res.render('foto', { fotoList });
+    });
+});
+
+app.get('/user', (req, res) => {
+    fs.readFile(path.join(__dirname, 'database', 'user.json'), 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).send('Error reading data');
+        }
+        const users = JSON.parse(data);
+        res.render('user', { users });
+    });
+});
+
+
+
 app.get('/tes', tes);
 app.get('/login', HarusLogin, awal);
 app.get('/lobby', HarusLogin, lobby);

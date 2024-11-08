@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users List</title>
+</head>
+<body>
+    <h1>Users List</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>JID</th>
+                <th>First Interaction</th>
+                <th>Last Interaction</th>
+                <th>Message Count</th>
+                <th>Coin</th>
+                <th>Saldo</th>
+                <th>Limit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% users.forEach(function(user) { %>
+                <tr>
+                    <td><%= user.jid %></td>
+                    <td><%= user.firstInteraction %></td>
+                    <td><%= user.lastInteraction %></td>
+                    <td><%= user.messageCount %></td>
+                    <td><%= user.coin || 0 %></td>
+                    <td><%= user.saldo || 0 %></td>
+                    <td><%= user.limit || 100 %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</body>
+</html>

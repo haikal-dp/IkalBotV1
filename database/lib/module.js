@@ -10,7 +10,7 @@ modul: {
 	path: require('path'),
 	
 	pino: require('pino'),
-	process: require('process'),
+	adaprocess: require('process'),
 	
 }
 }

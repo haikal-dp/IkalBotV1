@@ -1,14 +1,14 @@
 const { modul } = require('./database/lib/module')
-const {axios, path, fs,pino, process} = modul
+const { axios, path, fs, pino, process } = modul
 require('./setting');
-const {notifyOwner,handleNewUser,handleGroupMessage} = require ('./database/lib/fungsi')
+const { notifyOwner, handleNewUser, handleGroupMessage } = require('./database/lib/fungsi')
 let menu = require('./menu'); // Menggunakan let agar bisa di-reassign
-const { makeWASocket,useMultiFileAuthState, downloadMediaMessage } = require('@whiskeysockets/baileys');
+const { makeWASocket, useMultiFileAuthState, downloadMediaMessage } = require('@whiskeysockets/baileys');
 // Konfigurasi logger untuk menghilangkan output pino dari console
 const logger = pino({ level: 'silent' });
 
 const fotoPath = './database/foto';
-if (!fs.existsSync(fotoPath)){
+if (!fs.existsSync(fotoPath)) {
     fs.mkdirSync(fotoPath, { recursive: true });
 }
 
@@ -17,20 +17,20 @@ let sock1, sock2;
 async function startBot() {
     const { state: state1, saveCreds: saveCreds1 } = await useMultiFileAuthState('./session1');
     const { state: state2, saveCreds: saveCreds2 } = await useMultiFileAuthState('./session2');
-   
+
     sock1 = makeWASocket({
         auth: state1,
         logger: logger
     });
-    
+
     sock2 = makeWASocket({
         auth: state2,
         logger: logger
     });
-    
+
     // Setup event listeners for sock1
     setupEventListeners(sock1, saveCreds1, '1');
-    
+
     // Setup event listeners for sock2
     setupEventListeners(sock2, saveCreds2, '2');
 
@@ -85,12 +85,12 @@ function setupEventListeners(sock, saveCreds, sockId) {
                     console.error('Download media gagal, tidak menerima buffer yang valid.');
                 }
             }
-            
+
             console.log(`Pesan masuk dari ${from} (Sock ${sockId}): ${textMessage}`);
 
             //await sock.readMessages([message.key]);
             await menu.handleMenu(sock, from, textMessage);
-            
+
         } catch (error) {
             console.error(`Terjadi error pada Sock ${sockId}:`, error);
             await notifyOwner(sock, error);
