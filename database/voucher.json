@@ -1,0 +1,64 @@
+{
+  "vouchers": [
+    {
+      "paket": "10 jam",
+      "harga": "3000",
+      "kode": "12XDE",
+      "redeemed": true
+    },
+    {
+      "paket": "24 jam",
+      "harga": "5000",
+      "kode": "GGG",
+      "redeemed": true
+    },
+    {
+      "peket": "1 minggu",
+      "harga": "20000",
+      "kode": "PPP",
+      "redeemed": false
+    },
+    {
+      "paket": "1 bulan",
+      "harga": "50000",
+      "kode": "YYY",
+      "redeemed": false
+    },
+    {
+      "paket": "10 jam",
+      "harga": "3000",
+      "kode": "SEPULUH",
+      "redeemed": true
+    },
+    {
+      "paket": "24 jam",
+      "harga": "5000",
+      "kode": "1HARY",
+      "redeemed": true
+    },
+    {
+      "peket": "1 minggu",
+      "harga": "20000",
+      "kode": "2MNG",
+      "redeemed": false
+    },
+    {
+      "paket": "1 bulan",
+      "harga": "50000",
+      "kode": "1BULAN",
+      "redeemed": false
+    },
+    {
+      "paket": "24 jam",
+      "harga": "5000",
+      "kode": "GOGOGOGO",
+      "redeemed": true
+    },
+    {
+      "paket": "24 jam",
+      "harga": "5000",
+      "kode": "uuuuuuu",
+      "redeemed": true
+    }
+  ]
+}

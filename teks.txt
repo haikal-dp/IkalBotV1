@@ -1,0 +1,213 @@
+buatkan kode case " voucher " untuk bot WhatsApp memiliki saya
+ yaitu dimana ada database/voucher.json
+  dan sususannya ada :
+  
+   jumlah:100
+   nama:Voucher 10 Jam
+   kodeVOUCHER:uYIk9(dirahasiakan )
+   HARGA:Rp.3000
+   reedemed:false/true , 
+
+   silahkan buatkan itu dan untuk pengguna mengirim pesan ke bot voucher 
+   bot akan membalas :
+
+   Hai Ini adalah list dari harga voucher 
+   PAKET HEMAT
+   Voucher 10 Jam - Rp.3.000
+   Voucher 24 Jam - Rp.5.000
+
+   PAKET KARYAWAN
+   voucher 1 Minggu - RP.20.000
+   voucher 1 Bulan - RP.50.000
+
+   Untuk Pembelian Offline Bisa Datang ke
+   Ervita Salon , Lantai 1 Blok D 9-10
+
+   Untuk Pembelian Online Bisa balas Pesan ini dengan
+   'belivoucher'
+
+   informasi voucher Real-Time
+   Jumlah Voucher:
+   Vocuher 10 Jam: 100 //baca data ini dari database
+   vocuher 24 Jam: 50
+   voucher 1 Minggu: 20
+   voucher 1 Bulan: 10
+
+   --------
+
+   dan untuk case belivoucher maka bot akan mengirim gambar dengan kode
+case 'belivoucher': {
+            sock.sendMessage(from, { image: { url: './database/file/img/telegram.png' }, caption: 'Berikut hasil gambar AI untuk teks yang diberikan.' });
+        }
+untuk captionya ubah seperti ini 
+
+silahkan scan qris ini menggunakan semua aplikasi buatkan
+masukan harga sesuai dengan voucher yang ingin dibeli
+kirimkan bukti foto pembayaran ke chat ini
+-------
+dan ketika sudah selesai dan saya mengecek secara mandiri
+saya akan mengirim pesan 
+v-3000(case voucher 10 jam beserta data lengkap nya)
+v-5000
+v-20000 dan seterusnya
+
+maka bot mengirim kode voucher 
+dan mengubah lah voucher menjadi 
+reedemed:true
+
+tolong fahami dan buatkan dengan baik 
+
+
+masukan semua kode ke menu.js saya ini
+
+ini contoh json nya
+{
+  "vouchers": [
+    {
+        "paket":"10 jam",
+      "harga": "3000",
+      "kode": "12XDE",
+      "redeemed": false
+    },
+    {
+        "paket":"24 jam",
+      "harga": "5000",
+      "kode": "GGG",
+      "redeemed": false
+    },
+    { 
+        "peket":"1 minggu",
+      "harga": "20000",
+      "kode": "PPP",
+      "redeemed": false
+    },
+    {
+        "paket":"1 bulan",
+      "harga": "50000",
+      "kode": "YYY",
+      "redeemed": false
+    }
+    {
+        "paket":"10 jam",
+      "harga": "3000",
+      "kode": "SEPULUH",
+      "redeemed": false
+    },
+    {
+        "paket":"24 jam",
+      "harga": "5000",
+      "kode": "1HARY",
+      "redeemed": false
+    },
+    { 
+        "peket":"1 minggu",
+      "harga": "20000",
+      "kode": "2MNG",
+      "redeemed": false
+    },
+    {
+        "paket":"1 bulan",
+      "harga": "50000",
+      "kode": "1BULAN",
+      "redeemed": false
+    }
+]
+}
+
+require('./setting');//require('./database/lib/bankcek');
+const { modul } = require('./database/lib/module')
+const { axios, path, fs, baileys, process } = modul
+const { BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto, generateWAMessageContent, generateWAMessage, prepareWAMessageMedia, areJidsSameUser, getContentType, generateForwardMessageContent } = baileys
+
+const { isOwner, isPremium } = require('./database/lib/role');
+// Path ke file owner.json dan user.json
+const roleDatabasePath = path.join(__dirname, 'database', 'role.json');
+const userDatabasePath = path.join(__dirname, 'database', 'user.json');
+// Fungsi untuk membaca data voucher dari file JSON
+const readVouchers = () => {
+    const filePath = path.join(__dirname, 'database', 'voucher.json');
+    if (fs.existsSync(filePath)) {
+        try {
+            return JSON.parse(fs.readFileSync(filePath));
+        } catch (error) {
+            console.error('Error parsing JSON:', error);
+            return { vouchers: [] }; // Kembalikan array kosong jika terjadi kesalahan
+        }
+    }
+    return { vouchers: [] }; // Kembalikan array kosong jika file tidak ada
+};
+
+
+// Fungsi untuk memperbarui status voucher
+const updateVoucherStatus = (voucherKey, kode, status) => {
+    const filePath = path.join(__dirname, 'database', 'voucher.json');
+    const vouchers = readVouchers();
+    const voucherArray = vouchers[voucherKey];
+
+    if (Array.isArray(voucherArray)) {
+        const voucher = voucherArray.find(v => v.kode === kode);
+        if (voucher) {
+            voucher.redeemed = status;
+            fs.writeFileSync(filePath, JSON.stringify(vouchers, null, 2));
+        } else {
+            console.error(`Voucher dengan kode ${kode} tidak ditemukan di ${voucherKey}.`);
+        }
+    } else {
+        console.error(`Voucher key ${voucherKey} tidak ditemukan.`);
+    }
+};
+
+module.exports = handleMenu = async (sock, from, commandText) => {
+
+    const reply = (message) => sock.sendMessage(from, { text: message }); // Fungsi untuk membalas pesan
+    const command = commandText.split(' ')[0].toLowerCase();
+    const args = commandText.slice(command.length + 1).trim().split(/\s+/); // Ubah menjadi array
+    const text = args.join(' '); // Ini akan bekerja dengan args sebagai array
+    const pesan = args.slice(1).join(' ');
+    const widipe = axios.create({
+        baseURL: 'https://widipe.com',
+        timeout: 10000,
+        headers: { 'Content-Type': 'application/json' }
+    });
+    switch (command) {
+        case 'voucher': {
+            const vouchers = readVouchers();
+            let voucherList = 'Hai Ini adalah list dari harga voucher\n\n';
+            voucherList += 'PAKET HEMAT\n';
+             // Menampilkan satu voucher dari vouchers-10
+    if (vouchers['vouchers-10'] && vouchers['vouchers-10'].length > 0) {
+        const voucher = vouchers['vouchers-10'][0]; // Ambil voucher pertama
+        voucherList += `Voucher 10 Jam - Rp.${voucher.harga} (Kode: ${voucher.kode})\n`;
+    }
+
+    voucherList += '\nPAKET KARYAWAN\n';
+    
+    // Menampilkan satu voucher dari vouchers-24
+    if (vouchers['vouchers-24'] && vouchers['vouchers-24'].length > 0) {
+        const voucher = vouchers['vouchers-24'][0]; // Ambil voucher pertama
+        voucherList += `Voucher 24 Jam - Rp.${voucher.harga} (Kode: ${voucher.kode})\n`;
+    }
+            voucherList += '\nUntuk Pembelian Offline Bisa Datang ke\nErvita Salon, Lantai 1 Blok D 9-10\n\n';
+            voucherList += 'Untuk Pembelian Online Bisa balas Pesan ini dengan\n\'belivoucher\'\n\n';
+            reply(voucherList);
+            break;
+        }
+        case 'v-3000': {
+            const vouchers = readVouchers();
+            const voucherKey = 'vouchers-10'; // Misalkan kita mencari di vouchers-10
+            const voucherArray = vouchers[voucherKey];
+            const voucher = voucherArray.find(v => v.harga === "3000" && !v.redeemed);
+
+            if (voucher) {
+                reply(`Kode voucher Anda adalah: ${voucher.kode}`);
+                // Update status voucher menjadi redeemed
+                updateVoucherStatus(voucherKey, voucher.kode, true);
+            } else {
+                reply('Maaf, voucher dengan harga Rp.3000 tidak tersedia atau sudah digunakan.');
+            }
+            break;
+        }
+        case 'belivoucher': {
+            sock.sendMessage(from, { image: { url: './database/img/pp.jpg' }, caption: 'Silahkan scan qris ini menggunakan semua aplikasi, masukan harga sesuai dengan voucher yang ingin dibeli, kirimkan bukti foto pembayaran ke chat ini.' });
+            break;
+        }

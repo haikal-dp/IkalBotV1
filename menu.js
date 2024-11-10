@@ -8,6 +8,58 @@ const { isOwner, isPremium } = require('./database/lib/role');
 const roleDatabasePath = path.join(__dirname, 'database', 'role.json');
 const userDatabasePath = path.join(__dirname, 'database', 'user.json');
 
+// Fungsi untuk membaca data voucher dari file JSON
+const readVouchers = () => {
+    const filePath = path.join(__dirname, 'database', 'voucher.json');
+    if (fs.existsSync(filePath)) {
+        try {
+            return JSON.parse(fs.readFileSync(filePath));
+        } catch (error) {
+            console.error('Error parsing JSON:', error);
+            return { vouchers: [] }; // Kembalikan array kosong jika terjadi kesalahan
+        }
+    }
+    return { vouchers: [] }; // Kembalikan array kosong jika file tidak ada
+};
+
+// Fungsi untuk memperbarui status voucher
+const updateVoucherStatus = (kode, status) => {
+    const filePath = path.join(__dirname, 'database', 'voucher.json');
+    const vouchers = readVouchers();
+    const voucher = vouchers.vouchers.find(v => v.kode === kode);
+    
+    if (voucher) {
+        voucher.redeemed = status;
+        fs.writeFileSync(filePath, JSON.stringify(vouchers, null, 2));
+    } else {
+        console.error(`Voucher dengan kode ${kode} tidak ditemukan.`);
+    }
+};
+
+
+
+// Fungsi untuk menambahkan voucher baru
+const addVoucher = (paket, harga, kode) => {
+    const filePath = path.join(__dirname, 'database', 'voucher.json');
+    const vouchers = readVouchers();
+
+    // Cek apakah kode sudah ada
+    const existingVoucher = vouchers.vouchers.find(v => v.kode === kode);
+    if (existingVoucher) {
+        return `Voucher dengan kode ${kode} sudah ada.`;
+    }
+
+    // Tambahkan voucher baru
+    vouchers.vouchers.push({
+        paket: paket,
+        harga: harga,
+        kode: kode,
+        redeemed: false
+    });
+
+    fs.writeFileSync(filePath, JSON.stringify(vouchers, null, 2));
+    return `Voucher baru berhasil ditambahkan: ${paket} - Rp.${harga} - Kode: ${kode}`;
+};
 module.exports = handleMenu = async (sock, from, commandText) => {
 
     const reply = (message) => sock.sendMessage(from, { text: message }); // Fungsi untuk membalas pesan
@@ -21,7 +73,93 @@ module.exports = handleMenu = async (sock, from, commandText) => {
         headers: { 'Content-Type': 'application/json' }
     });
     switch (command) {
+        
+        case 'addvoucher-5000': {
+            const result = addVoucher('24 jam', '5000', text);
+            if (!isOwner(from)) {
+            reply('sorry')
+            return;
+            }
+            reply(result);
+            break;
+        }
+        case 'voucher': {
+            const vouchers = readVouchers();
+            if (vouchers.vouchers.length === 0) {
+                reply('Tidak ada voucher yang tersedia.');
+                break;
+            }
+            
+            let voucherList = 'Hai Ini adalah list dari harga voucher\n\n';
+            voucherList += 'PAKET HEMAT\n';
+            voucherList += `Voucher 10 Jam - Rp.${vouchers.vouchers[0].harga}\n`;
+            voucherList += `Voucher 24 Jam - Rp.${vouchers.vouchers[1].harga}\n\n`;
+            voucherList += 'PAKET KARYAWAN\n';
+            voucherList += `Voucher 1 Minggu - Rp.${vouchers.vouchers[2].harga}\n`;
+            voucherList += `Voucher 1 Bulan - Rp.${vouchers.vouchers[3].harga}\n\n`;
+            voucherList += 'Untuk Pembelian Offline Bisa Datang ke\nErvita Salon, Lantai 1 Blok D 9-10\n\n';
+            voucherList += 'Untuk Pembelian Online Bisa balas Pesan ini dengan\n\'belivoucher\'\n\n';
+            reply(voucherList);
+            break;
+        }
+        case 'belivoucher': {
+            sock.sendMessage(from, { image: { url: './database/img/pp.jpg' }, caption: 'Silahkan scan qris ini menggunakan semua aplikasi, masukan harga sesuai dengan voucher yang ingin dibeli, kirimkan bukti foto pembayaran ke chat ini.' });
+            break;
+        }
+        case 'v-3000': {
+            const caption = `Voucher ini berlaku Selama 10 Jam. Di ervita.net`
+            const vouchers = readVouchers();
+            const voucher = vouchers.vouchers.find(v => v.harga === "3000" && !v.redeemed);
 
+            if (voucher) {
+                reply(`Kode voucher Anda adalah: ${voucher.kode}`);
+                // Update status voucher menjadi redeemed
+                updateVoucherStatus(voucher.kode, true);
+            } else {
+                reply('Maaf, voucher dengan harga Rp.3000 tidak tersedia atau sudah digunakan.');
+            }
+            break;
+        }
+        case 'v-5000': {
+            const vouchers = readVouchers();
+            const voucher = vouchers.vouchers.find(v => v.harga === "5000" && !v.redeemed);
+
+            if (voucher) {
+                reply(`Kode voucher Anda adalah: ${voucher.kode}`);
+                // Update status voucher menjadi redeemed
+                updateVoucherStatus(voucher.kode, true);
+            } else {
+                reply('Maaf, voucher dengan harga Rp.5000 tidak tersedia atau sudah digunakan.');
+            }
+            break;
+        }
+        case 'v-20000': {
+            const vouchers = readVouchers();
+            const voucher = vouchers.vouchers.find(v => v.harga === "20000" && !v.redeemed);
+
+            if (voucher) {
+                reply(`Kode voucher Anda adalah: ${voucher.kode}`);
+                // Update status voucher menjadi redeemed
+                updateVoucherStatus(voucher.kode, true);
+            } else {
+                reply('Maaf, voucher dengan harga Rp.20000 tidak tersedia atau sudah digunakan.');
+            }
+            break;
+        }
+            case 'v-50000': {
+                const vouchers = readVouchers();
+                const voucher = vouchers.vouchers.find(v => v.harga === "50000" && !v.redeemed);
+    
+                if (voucher) {
+                    reply(`Kode voucher Anda adalah: ${voucher.kode}`);
+                    // Update status voucher menjadi redeemed
+                    updateVoucherStatus(voucher.kode, true);
+                } else {
+                    reply('Maaf, voucher dengan harga Rp.50000 tidak tersedia atau sudah digunakan.');
+                }
+                break;
+            }
+            
         case 'chord': {
 
             if (!text) return reply('Kamu mau cari chord lagu apa nih ');
@@ -241,7 +379,7 @@ module.exports = handleMenu = async (sock, from, commandText) => {
             let config = {
                 method: 'post',
                 maxBodyLength: Infinity,
-                url: 'http://localhost:9999/kirimpesan', // Tambahkan 'http://' jika belum ada
+                url: `${global.domain}/kirimpesan`, // Tambahkan 'http://' jika belum ada
                 headers: {
                     'Content-Type': 'application/json',
                     'Cookie': 'connect.sid=s%3AIoVJQtZn0sZX9j_JeJ7uJ90z0kCmndY8.seYKUB3vX9zCWxoxP0OqkuP5SEbvxdEzu%2FemXUDQDaY'
