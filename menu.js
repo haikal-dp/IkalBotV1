@@ -83,6 +83,15 @@ module.exports = handleMenu = async (sock, from, commandText) => {
             reply(result);
             break;
         }
+        case 'addvoucher-3000': {
+            const result = addVoucher('10 jam', '3000', text);
+            if (!isOwner(from)) {
+            reply('sorry')
+            return;
+            }
+            reply(result);
+            break;
+        }
         case 'voucher': {
             const vouchers = readVouchers();
             if (vouchers.vouchers.length === 0) {
@@ -91,28 +100,33 @@ module.exports = handleMenu = async (sock, from, commandText) => {
             }
             
             let voucherList = 'Hai Ini adalah list dari harga voucher\n\n';
-            voucherList += 'PAKET HEMAT\n';
-            voucherList += `Voucher 10 Jam - Rp.${vouchers.vouchers[0].harga}\n`;
-            voucherList += `Voucher 24 Jam - Rp.${vouchers.vouchers[1].harga}\n\n`;
-            voucherList += 'PAKET KARYAWAN\n';
-            voucherList += `Voucher 1 Minggu - Rp.${vouchers.vouchers[2].harga}\n`;
-            voucherList += `Voucher 1 Bulan - Rp.${vouchers.vouchers[3].harga}\n\n`;
+            voucherList += '[*] PAKET HEMAT [*]\n';
+            voucherList += `+ Voucher 10 Jam - Rp.${vouchers.vouchers[0].harga}\n\n\n`;
+           // voucherList += `Voucher 24 Jam - Rp.${vouchers.vouchers[1].harga}\n\n`;
+            //voucherList += 'PAKET KARYAWAN\n';
+            //voucherList += `Voucher 1 Minggu - Rp.${vouchers.vouchers[2].harga}\n`;
+            //voucherList += `Voucher 1 Bulan - Rp.${vouchers.vouchers[3].harga}\n\n`;
             voucherList += 'Untuk Pembelian Offline Bisa Datang ke\nErvita Salon, Lantai 1 Blok D 9-10\n\n';
-            voucherList += 'Untuk Pembelian Online Bisa balas Pesan ini dengan\n\'belivoucher\'\n\n';
+            voucherList += 'Untuk Pembelian Online Bisa balas Pesan ini dengan\n\n*belivoucher*\n\n';
+            voucherList += 'kontak ervita salon \nhttps://wa.me/6281294701977'
             reply(voucherList);
             break;
         }
         case 'belivoucher': {
-            sock.sendMessage(from, { image: { url: './database/img/pp.jpg' }, caption: 'Silahkan scan qris ini menggunakan semua aplikasi, masukan harga sesuai dengan voucher yang ingin dibeli, kirimkan bukti foto pembayaran ke chat ini.' });
+            sock.sendMessage(from, { image: { url: './database/img/qris.jpeg' }, caption: 'Silahkan scan qris ini menggunakan semua aplikasi, masukan harga sesuai dengan voucher yang ingin dibeli, kirimkan bukti foto pembayaran ke chat ini.' });
             break;
         }
         case 'v-3000': {
+            if (!isOwner(from)) {
+                reply('sorry')
+                return;
+                }
             const caption = `Voucher ini berlaku Selama 10 Jam. Di ervita.net`
             const vouchers = readVouchers();
             const voucher = vouchers.vouchers.find(v => v.harga === "3000" && !v.redeemed);
 
             if (voucher) {
-                reply(`Kode voucher Anda adalah: ${voucher.kode}`);
+                reply(`Kode voucher Anda adalah: ${voucher.kode}\nVoucher Berlaku:${voucher.paket}\n\nTerrimakasih Semoga Berlangganan`);
                 // Update status voucher menjadi redeemed
                 updateVoucherStatus(voucher.kode, true);
             } else {
@@ -121,6 +135,10 @@ module.exports = handleMenu = async (sock, from, commandText) => {
             break;
         }
         case 'v-5000': {
+            if(!isOwner(from)){
+                reply('sorry')
+                return;
+            }
             const vouchers = readVouchers();
             const voucher = vouchers.vouchers.find(v => v.harga === "5000" && !v.redeemed);
 
@@ -134,6 +152,10 @@ module.exports = handleMenu = async (sock, from, commandText) => {
             break;
         }
         case 'v-20000': {
+            if(!isOwner(from)){
+                reply('sorry')
+                return;
+            }
             const vouchers = readVouchers();
             const voucher = vouchers.vouchers.find(v => v.harga === "20000" && !v.redeemed);
 
@@ -147,6 +169,10 @@ module.exports = handleMenu = async (sock, from, commandText) => {
             break;
         }
             case 'v-50000': {
+                if(!isOwner(from)){
+                    reply('sorry')
+                    return;
+                }
                 const vouchers = readVouchers();
                 const voucher = vouchers.vouchers.find(v => v.harga === "50000" && !v.redeemed);
     

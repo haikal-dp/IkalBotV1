@@ -38,7 +38,7 @@ startBot().then((result) => {
     console.error('Gagal memulai bot:', err);
 });
 
-app.get('/salon', salon)
+//.get('/salon', salon)
 app.get('/', index);
 app.get('/foto', foto);
 app.get('/user', user);
