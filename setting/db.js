@@ -1,11 +1,31 @@
-const mysql = require('mysql2')
+// const mysql = require('mysql2');
+
+// // Buat koneksi ke database
+// const db = mysql.createConnection({
+//     host: 'localhost', // Tetap gunakan 'localhost' jika database berada di server yang sama
+//     user: 'haikungm_haikal', // Gunakan username yang Anda buat di cPanel
+//     password: 'haikallol', // Masukkan password yang Anda tentukan di cPanel
+//     database: 'haikungm_bot' // Gunakan nama database yang benar
+// });
+
+// // Cek koneksi
+// db.connect((err) => {
+//     if (err) {
+//         console.error('Koneksi ke database gagal:', err);
+//         return;
+//     }
+//     console.log('Terhubung ke database MySQL');
+// });
+
+// module.exports = db;
+const mysql = require('mysql2');
 
 // Buat koneksi ke database
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'haikungm_bots', // Ganti dengan username MySQL kamu
-    password: 'Haikallol123', // Ganti dengan password MySQL kamu
-    database: 'haikungm_bots'
+    host: 'localhost', // Tetap gunakan 'localhost' jika database berada di server yang sama
+    user: 'root', // Gunakan username yang Anda buat di cPanel
+    password: '', // Masukkan password yang Anda tentukan di cPanel
+    database: 'express' // Gunakan nama database yang benar
 });
 
 // Cek koneksi
@@ -17,4 +37,4 @@ db.connect((err) => {
     console.log('Terhubung ke database MySQL');
 });
 
-module.exports = (db);
+module.exports = db;

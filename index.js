@@ -1,6 +1,8 @@
 const { modul } = require('./database/lib/module')
 const { axios, path, fs, pino, process } = modul
 require('./setting');
+
+//const { smsg, isUrl, generateMessageTag, getBuffer, getSizeMedia, fetchJson, await, sleep, reSize } = require('./database/lib/myfunc')
 const { notifyOwner, handleNewUser, handleGroupMessage } = require('./database/lib/fungsi')
 let menu = require('./menu'); // Menggunakan let agar bisa di-reassign
 const { makeWASocket, useMultiFileAuthState, downloadMediaMessage } = require('@whiskeysockets/baileys');

@@ -36,9 +36,9 @@ const handleNewUser = async (sock, userJid) => {
             fs.writeFileSync(userDatabasePath, JSON.stringify(users, null, 2));
 
             // Kirim pesan selamat datang
-            await sock.sendMessage(userJid, { 
-                text: `Selamat datang 👋\n Terimakasih telah menghubungi saya, ada yang bisa saya bantu?` 
-            });
+            // await sock.sendMessage(userJid, { 
+            //     text: `Selamat datang 👋\n Terimakasih telah menghubungi saya, ada yang bisa saya bantu?` 
+            // });
 
             console.log(`User baru tersimpan: ${userJid}`);
         } else {
