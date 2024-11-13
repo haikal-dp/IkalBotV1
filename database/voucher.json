@@ -5,6 +5,12 @@
       "harga": "3000",
       "kode": "GG3000",
       "redeemed": false
+    },
+    {
+      "paket": "24 jam",
+      "harga": "5000",
+      "kode": "",
+      "redeemed": false
     }
   ]
 }

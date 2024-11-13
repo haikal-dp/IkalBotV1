@@ -1,4 +1,5 @@
 require('./setting');//require('./database/lib/bankcek');
+const { socket } = require('dgram');
 const { modul } = require('./database/lib/module')
 const { axios, path, fs, baileys, process } = modul
 const { BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto, generateWAMessageContent, generateWAMessage, prepareWAMessageMedia, areJidsSameUser, getContentType, generateForwardMessageContent } = baileys
@@ -61,8 +62,25 @@ const addVoucher = (paket, harga, kode) => {
     return `Voucher baru berhasil ditambahkan: ${paket} - Rp.${harga} - Kode: ${kode}`;
 };
 module.exports = handleMenu = async (sock, from, commandText) => {
-    const fkontak = { key: {participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: `status@broadcast` } : {}) }, message: { 'contactMessage': { 'displayName': `ownername`, 'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;${`ownername`},;;;\nFN:${`ownername`}\nitem1.TEL;waid=6285892928715:6285892928715\nitem1.X-ABLabel:Mobile\nEND:VCARD`, 'jpegThumbnail': global.thumb, thumbnail: global.thumb,sendEphemeral: true}}}
+    const fkontak = { key: {participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: `status@broadcast` } : {}) }, message: { 'contactMessage': { 'displayName': `'ownername'`, 'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;${`'ownername'`},;;;\nFN:${`'ownername'`}\nitem1.TEL;waid=6285892928715:6285892928715\nitem1.X-ABLabel:Mobile\nEND:VCARD`, 'jpegThumbnail': global.thumb, thumbnail: global.thumb,sendEphemeral: true}}}
 	
+const replynano = (teks) => {
+    sock.sendMessage(from,
+    { text: teks,
+    contextInfo:{
+    mentionedJid:[from],
+    forwardingScore: 0,
+    isForwarded: false,
+    "externalAdReply": {
+    "showAdAttribution": true,
+    "containsAutoReply": true,
+    "title": `${global.namabot}`,
+    "body": `hai 👋🏻`,
+    "previewType": "IMAGE",
+    "thumbnailUrl": 'https://i.ibb.co/5vGsdR2/thumb.jpg',
+    "sourceUrl": 'https://instagram.com/haikung.my.id'}}},
+    { quoted: fkontak})
+    }
     const reply = (message) => sock.sendMessage(from, { text: message }); // Fungsi untuk membalas pesan
     const command = commandText.split(' ')[0].toLowerCase();
     const args = commandText.slice(command.length + 1).trim().split(/\s+/); // Ubah menjadi array
@@ -74,7 +92,62 @@ module.exports = handleMenu = async (sock, from, commandText) => {
         headers: { 'Content-Type': 'application/json' }
     });
     switch (command) {
-        
+        case 'tes2': {
+            let nano_sad = `hallo`
+          let msg = generateWAMessageFromContent(from, {
+            viewOnceMessage: {
+              message: {
+                  "messageContextInfo": {
+                    "deviceListMetadata": {},
+                    "deviceListMetadataVersion": 2
+                  },
+                  interactiveMessage: proto.Message.InteractiveMessage.create({
+                    body: proto.Message.InteractiveMessage.Body.create({
+                      text: nano_sad
+                    }),
+                    footer: proto.Message.InteractiveMessage.Footer.create({
+                      text: global.namabot
+                    }),
+                    header: proto.Message.InteractiveMessage.Header.create({
+                          ...(await prepareWAMessageMedia({ image : fs.readFileSync('./data/image/thumb.jpg')}, { upload: sock.waUploadToServer})), 
+                            title: ``,
+                            gifPlayback: true,
+                            subtitle: 'ownername',
+                            hasMediaAttachment: false  
+                          }),
+                    nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                      buttons: [
+                      {
+                          "name": "quick_reply",
+                          "buttonParamsJson": `{"display_text":"Owner 👤","id":".owner"}`
+                        }
+                     ],
+                    }),
+                    contextInfo: {
+                            mentionedJid: [from], 
+                            forwardingScore: 999,
+                            isForwarded: true,
+                          forwardedNewsletterMessageInfo: {
+                            newsletterJid: '120363222395675670@newsletter',
+                            newsletterName: 'ownername',
+                            serverMessageId: 143
+                          }
+                          }
+                  })
+              }
+            }
+          }, {})
+          
+           await sock.relayMessage(msg.key.remoteJid, msg.message, {
+             messageId: msg.key.id
+           })
+          }
+          break
+          
+        case 'tes':{
+            replynano('hallo')
+            break;
+        };
         case 'addvoucher-5000': {
             const result = addVoucher('24 jam', '5000', text);
             if (!isOwner(from)) {
@@ -661,7 +734,7 @@ module.exports = handleMenu = async (sock, from, commandText) => {
                               ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/dana.jpg' } }, { upload: sock.waUploadToServer })),
                               title: '',
                               gifPlayback: true,
-                              subtitle: `ownername`,
+                              subtitle: `'ownername'`,
                               hasMediaAttachment: false
                             }),
                             body: { text: `> Klik tombol DANA di bawah\n> DANA A/N: ${global.andana}` },
@@ -679,7 +752,7 @@ module.exports = handleMenu = async (sock, from, commandText) => {
                               ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/gopay.jpg' } }, { upload: sock.waUploadToServer })),
                               title: '',
                               gifPlayback: true,
-                              subtitle: `ownername`,
+                              subtitle: `'ownername'`,
                               hasMediaAttachment: false
                             }),
                             body: { text: `> Klik tombol GOPAY di bawah\n> GOPAY A/N: ${global.angopay}` },
@@ -697,7 +770,7 @@ module.exports = handleMenu = async (sock, from, commandText) => {
                               ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/seabank.png' } }, { upload: sock.waUploadToServer })),
                               title: '',
                               gifPlayback: true,
-                              subtitle: `ownername`,
+                              subtitle: `'ownername'`,
                               hasMediaAttachment: false
                             }),
                             body: { text: `> Klik tombol Seabank di bawah\n> Seabank A/N: ${global.anseabank}` },
@@ -715,7 +788,7 @@ module.exports = handleMenu = async (sock, from, commandText) => {
                               ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/bri.png' } }, { upload: sock.waUploadToServer })),
                               title: '',
                               gifPlayback: true,
-                              subtitle: `ownername`,
+                              subtitle: `'ownername'`,
                               hasMediaAttachment: false
                             }),
                             body: { text: `> Klik tombol BRI di bawah\n> BRI A/N: ${global.anbri}` },
@@ -733,7 +806,7 @@ module.exports = handleMenu = async (sock, from, commandText) => {
                               ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/qris.jpg' } }, { upload: sock.waUploadToServer })),
                               title: '',
                               gifPlayback: true,
-                              subtitle: `ownername`,
+                              subtitle: `'ownername'`,
                               hasMediaAttachment: false
                             }),
                             body: { text: `> SCAN di atas / klik tombol` },
