@@ -81,7 +81,7 @@ const replynano = (teks) => {
     "sourceUrl": 'https://instagram.com/haikung.my.id'}}},
     { quoted: fkontak})
     }
-    const reply = (message) => sock.sendMessage(from, { text: message }); // Fungsi untuk membalas pesan
+    const reply = (message) => sock.sendMessage(from,{ text: message }); // Fungsi untuk membalas pesan
     const command = commandText.split(' ')[0].toLowerCase();
     const args = commandText.slice(command.length + 1).trim().split(/\s+/); // Ubah menjadi array
     const text = args.join(' '); // Ini akan bekerja dengan args sebagai array
@@ -91,6 +91,7 @@ const replynano = (teks) => {
         timeout: 10000,
         headers: { 'Content-Type': 'application/json' }
     });
+    
     switch (command) {
         case 'tes2': {
             let nano_sad = `hallo`
@@ -143,9 +144,27 @@ const replynano = (teks) => {
            })
           }
           break
-          
+          case 'testing':{
+            reply('hallo testing');
+            break;
+          }
         case 'tes':{
-            replynano('hallo')
+            const vcard = 'BEGIN:VCARD\n' // metadata of the contact card
+            + 'VERSION:3.0\n' 
+            + 'FN:Jeff Singh\n' // full name
+            + 'ORG:Ashoka Uni;\n' // the organization of the contact
+            + 'TEL;type=CELL;type=VOICE;waid=911234567890:+91 12345 67890\n' // WhatsApp ID + phone number
+            + 'END:VCARD'
+const sentMsg  = await sock.sendMessage(
+    from,
+    { 
+        contacts: { 
+            displayName: 'Jeff', 
+            contacts: [{ vcard }] 
+        }
+    }
+)
+sentMsg
             break;
         };
         case 'addvoucher-5000': {

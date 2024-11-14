@@ -8,6 +8,9 @@ const apilogs = (req, res) => {
 const kirimpesan = (req, res) => {
     res.render('kirimpesan');
 };
+const kirimpesan2 = (req, res) => {
+    res.render('kirimpesan2');
+};
 const index = (req, res) => {
     res.render('index');
 }
@@ -46,5 +49,6 @@ module.exports = {
     apilogs,
     foto,
     salon,
+    kirimpesan2,
     index
 }

@@ -12,7 +12,7 @@ const db = require('./setting/db');
 const { error404, error403, error500 } = require('./function/page/error');
 const { awal, tes, logout, lobby, pdaftar, plogin, daftar } = require('./function/page/pengguna.js');
 const { flipc, tebakangka, ptebakangka } = require('./function/page/game');
-const { apilogs, user, foto,salon, index,logs, kirimpesan } = require('./function/page/page.js');
+const { apilogs, user, foto,salon, index,logs, kirimpesan2,kirimpesan } = require('./function/page/page.js');
 const port = process.env.PORT || global.port;
 
 app.use(secret);
@@ -51,6 +51,7 @@ app.get('/tebakangka', ceklogin, tebakangka);
 app.get('/logs', logs);
 app.get('/api/logs', apilogs);
 app.get('/kirimpesan', kirimpesan);
+app.get('/kirimpesan2', kirimpesan2);
 
 //post
 app.post('/daftar', pdaftar);
@@ -72,6 +73,21 @@ app.post('/kirimpesan', async (req, res) => {
     }
     try {
         await sock1.sendMessage(nomor + '@s.whatsapp.net', { text: pesan });
+        res.send({ status: 'Pesan berhasil dikirim!' });
+        console.log('Pesan dikirim');
+    } catch (err) {
+        console.error('Gagal mengirim pesan:', err);
+        res.status(500).send({ error: 'Gagal mengirim pesan' });
+    }
+});
+
+app.post('/kirimpesan2', async (req, res) => {
+    const { nomor, pesan } = req.body;
+    if (!nomor || !pesan) {
+        return res.status(400).send({ error: 'Nomor dan pesan harus disertakan!' });
+    }
+    try {
+        await sock2.sendMessage(nomor + '@s.whatsapp.net', { text: pesan });
         res.send({ status: 'Pesan berhasil dikirim!' });
         console.log('Pesan dikirim');
     } catch (err) {
