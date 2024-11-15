@@ -13,7 +13,7 @@ const daftar = (req, res) => {
 const tes = (req, res) => {
     res.render('tes'); // Merender tampilan 'tes3.ejs'
 };
-const plogin =  (req, res) => {
+const plogin = (req, res) => {
     const { username, password } = req.body;
 
     db.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], (err, results) => {
@@ -33,7 +33,7 @@ const plogin =  (req, res) => {
         }
     });
 };
-const pdaftar =  (req, res) => {
+const pdaftar = (req, res) => {
     const { username, password, email, telepon, bank_id, nama_rek, no_rek } = req.body;
 
     // Cek apakah username, telepon, atau nomor rekening sudah terdaftar
@@ -59,7 +59,7 @@ const pdaftar =  (req, res) => {
         });
     });
 };
-const lobby =  (req, res) => {
+const lobby = (req, res) => {
     const username = req.session.username;
     db.query('SELECT saldo FROM users WHERE username = ?', [username], (err, results) => {
         if (err) {
@@ -75,7 +75,7 @@ const lobby =  (req, res) => {
         }
     });
 };
-const logout =  (req, res) => {
+const logout = (req, res) => {
     // Hapus session
     req.session.destroy((err) => {
         if (err) {

@@ -18,8 +18,6 @@ const port = process.env.PORT || global.port;
 app.use(secret);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
-
-app.use('/foto', express.static(path.join(__dirname, 'database/foto')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'public'));
 app.use((req, res, next) => {
@@ -33,7 +31,7 @@ let sock2;
 startBot().then((result) => {
     sock1 = result.sock1;
     sock2 = result.sock2
-    console.log('Telah Tersambung Pada Server Express | sock1 dan sock2');
+    console.log('Telah Tersambung Pada Server Express');
 }).catch((err) => {
     console.error('Gagal memulai bot:', err);
 });

@@ -11,7 +11,7 @@ const secret = session({
     cookie: {
         resave: false,
         saveUninitialized: true,
-         secure: false,//http or no kal!!
+         secure: true,//http or no kal!!
          maxAge: 3600000, // 1 jam dalam milidetik
         } 
 });
@@ -19,7 +19,7 @@ function ceklogin(req, res, next) {
     if (req.session.loggedin) {
         next();
     } else {
-        res.redirect('/'); // Arahkan ke halaman login jika belum login
+        res.redirect('/login'); // Arahkan ke halaman login jika belum login
     }
 }
 

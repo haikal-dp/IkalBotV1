@@ -1,12 +1,9 @@
 const { modul } = require('./database/lib/module')
 const { axios, path, fs, pino, process } = modul
 require('./setting');
-
-//const { smsg, isUrl, generateMessageTag, getBuffer, getSizeMedia, fetchJson, await, sleep, reSize } = require('./database/lib/myfunc')
 const { notifyOwner, handleNewUser, handleGroupMessage } = require('./database/lib/fungsi')
 let menu = require('./menu'); // Menggunakan let agar bisa di-reassign
 const { makeWASocket, useMultiFileAuthState, downloadMediaMessage } = require('@whiskeysockets/baileys');
-// Konfigurasi logger untuk menghilangkan output pino dari console
 const logger = pino({ level: 'silent' });
 
 const fotoPath = './database/foto';
@@ -14,31 +11,65 @@ if (!fs.existsSync(fotoPath)) {
     fs.mkdirSync(fotoPath, { recursive: true });
 }
 
-let sock1, sock2;
+let startBot;
 
-async function startBot() {
-    const { state: state1, saveCreds: saveCreds1 } = await useMultiFileAuthState('./session1');
-    const { state: state2, saveCreds: saveCreds2 } = await useMultiFileAuthState('./session2');
-
-    sock1 = makeWASocket({
-        auth: state1,
-        logger: logger
-    });
-
-    sock2 = makeWASocket({
-        auth: state2,
-        logger: logger
-    });
-
-    // Setup event listeners for sock1
-    setupEventListeners(sock1, saveCreds1, '1');
-
-    // Setup event listeners for sock2
-    setupEventListeners(sock2, saveCreds2, '2');
-
-    console.log('Menjalankan bot (proses loading)...');
-    return { sock1, sock2 };
+if (global.session) {
+    startBot = async function() {
+        const { state: state1, saveCreds: saveCreds1 } = await useMultiFileAuthState('./session1');
+        const { state: state2, saveCreds: saveCreds2 } = await useMultiFileAuthState('./session2');
+        
+        const sock1 = makeWASocket({
+            auth: state1,
+            logger: logger
+        });
+        const sock2 = makeWASocket({
+            auth: state2,
+            logger: logger
+        });
+    
+        setupEventListeners(sock1, saveCreds1, '1');
+        setupEventListeners(sock2, saveCreds2, '2');
+        
+        console.log('Menjalankan bot (proses loading)...');
+        return { sock1, sock2 };
+    };   
+} else {
+    startBot = async function() {
+        const { state: state1, saveCreds: saveCreds1 } = await useMultiFileAuthState('./session1');
+        // const { state: state2, saveCreds: saveCreds2 } = await useMultiFileAuthState('./session2');
+        
+        const sock1 = makeWASocket({
+            auth: state1,
+            logger: logger
+        });
+    
+        setupEventListeners(sock1, saveCreds1, '1');
+        
+        console.log('Menjalankan bot (proses loading)...');
+        return { sock1 };
+    };
 }
+
+// Memanggil fungsi startBot
+let sock1, sock2;
+// async function startBot() {
+//     const { state: state1, saveCreds: saveCreds1 } = await useMultiFileAuthState('./session1');
+//     const { state: state2, saveCreds: saveCreds2 } = await useMultiFileAuthState('./session2');
+//     sock1 = makeWASocket({
+//         auth: state1,
+//         logger: logger
+//     });
+//     sock2 = makeWASocket({
+//         auth: state2,
+//         logger: logger
+//     });
+
+//     setupEventListeners(sock1, saveCreds1, '1');
+//     setupEventListeners(sock2, saveCreds2, '2');
+    
+//     console.log('Menjalankan bot (proses loading)...');
+//     return { sock1, sock2 };
+// }
 
 function setupEventListeners(sock, saveCreds, sockId) {
     sock.ev.on('creds.update', saveCreds);
@@ -51,10 +82,11 @@ function setupEventListeners(sock, saveCreds, sockId) {
         }
     });
 
+    //PESAN MASUK
     sock.ev.on('messages.upsert', async (msg) => {
         try {
             const message = msg.messages[0];
-            if (!message.message || message.key.fromMe) return;
+            if (!message.messagee) return;
 
             const from = message.key.remoteJid;
             const textMessage = message.message.conversation || message.message.extendedTextMessage?.text || '';
@@ -76,7 +108,7 @@ function setupEventListeners(sock, saveCreds, sockId) {
             } else {
                 await handleNewUser(sock, from);
             }
-            
+
             if (message.message.imageMessage) {
                 const buffer = await downloadMediaMessage(message, 'buffer', {});
                 if (Buffer.isBuffer(buffer)) {
@@ -89,8 +121,15 @@ function setupEventListeners(sock, saveCreds, sockId) {
             }
 
             console.log(`Pesan masuk dari ${from} (Sock ${sockId}): ${textMessage}`);
-
-            //await sock.readMessages([message.key]);
+           
+            async function autoread(message) {
+                // Cek apakah global.autoread diatur ke true
+                if (global.autoread) {
+                        // Membaca pesan jika autoread diaktifkan
+                        await sock.readMessages([message.key]);   
+                } 
+            }
+            autoread(message)
             await menu.handleMenu(sock, from, textMessage);
 
         } catch (error) {

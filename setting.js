@@ -1,18 +1,16 @@
-
-const fs = require("fs")
-
+//bot setting
 global.namaowner = 'haikal dwi putra'
 global.namabot = 'Haikung Bot v1'
 global.nomorowner = '6285173229118'
-
 global.onlyowner = 'fitur khusus owner'
+global.autoread = true //bot auto read? true/false
+global.session = false
+
+//express
 global.domain = 'https://haikung.my.id'
 global.port = 80
-
-
-
-
-
-global.thumbnail = fs.readFileSync("./data/image/thumb.jpg")
-
-global.thumb = fs.readFileSync("./data/image/thumb.jpg") //ur thumb pic
+//database express
+global.hostdb = 'localhost'
+global.userdb = 'haikungm_haikal'//user database
+global.passdb = 'haikallol'//password database
+global.namadb = 'haikungm_bot'//nama database

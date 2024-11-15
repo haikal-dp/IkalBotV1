@@ -28,7 +28,7 @@ const updateVoucherStatus = (kode, status) => {
     const filePath = path.join(__dirname, 'database', 'voucher.json');
     const vouchers = readVouchers();
     const voucher = vouchers.vouchers.find(v => v.kode === kode);
-    
+
     if (voucher) {
         voucher.redeemed = status;
         fs.writeFileSync(filePath, JSON.stringify(vouchers, null, 2));
@@ -38,7 +38,7 @@ const updateVoucherStatus = (kode, status) => {
 };
 
 
-    
+
 // Fungsi untuk menambahkan voucher baru
 const addVoucher = (paket, harga, kode) => {
     const filePath = path.join(__dirname, 'database', 'voucher.json');
@@ -62,28 +62,36 @@ const addVoucher = (paket, harga, kode) => {
     return `Voucher baru berhasil ditambahkan: ${paket} - Rp.${harga} - Kode: ${kode}`;
 };
 module.exports = handleMenu = async (sock, from, commandText) => {
-    const fkontak = { key: {participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: `status@broadcast` } : {}) }, message: { 'contactMessage': { 'displayName': `'ownername'`, 'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;${`'ownername'`},;;;\nFN:${`'ownername'`}\nitem1.TEL;waid=6285892928715:6285892928715\nitem1.X-ABLabel:Mobile\nEND:VCARD`, 'jpegThumbnail': global.thumb, thumbnail: global.thumb,sendEphemeral: true}}}
-	
-const replyy = (teks) => {
-    sock.sendMessage(from,
-    { text: teks,
-    contextInfo:{
-    mentionedJid:[from],
-    forwardingScore: 0,
-    isForwarded: false,
-    "externalAdReply": {
-    "showAdAttribution": true,
-    "containsAutoReply": true,
-    "title": `${global.namabot}`,
-    "body": `instagram Saya`,
-    "previewType": "IMAGE",
-    "thumbnailUrl": 'https://i.ibb.co/5vGsdR2/thumb.jpg',
-    "sourceUrl": 'https://instagram.com/haikung.my.id'}}},
-    { quoted: fkontak})
+    const fkontak = { key: { participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: `status@broadcast` } : {}) }, message: { 'contactMessage': { 'displayName': `'ownername'`, 'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;${`'ownername'`},;;;\nFN:${`'ownername'`}\nitem1.TEL;waid=6285892928715:6285892928715\nitem1.X-ABLabel:Mobile\nEND:VCARD`, 'jpegThumbnail': global.thumb, thumbnail: global.thumb, sendEphemeral: true } } }
+
+    const ownerontak = 'BEGIN:VCARD\n' // metadata of the contact card
+        + 'VERSION:3.0\n'
+        + `FN:${global.namaowner}\n`// full name
+        + 'Haikung.my.id;\n' // the organization of the contact
+        + 'TEL;type=CELL;type=VOICE;waid=6285173229118:+6285173229118\n' // WhatsApp ID + phone number
+        + 'END:VCARD'
+    const replyy = (teks) => {
+        sock.sendMessage(from,
+            {
+                text: teks,
+                contextInfo: {
+                    mentionedJid: [from],
+                    forwardingScore: 0,
+                    isForwarded: false,
+                    "externalAdReply": {
+                        "showAdAttribution": true,
+                        "containsAutoReply": true,
+                        "title": `${global.namabot}`,
+                        "body": `instagram Saya`,
+                        "previewType": "IMAGE",
+                        "thumbnailUrl": 'https://i.ibb.co/5vGsdR2/thumb.jpg',
+                        "sourceUrl": 'https://instagram.com/haikung.my.id'
+                    }
+                }
+            },
+            { quoted: fkontak })
     }
-    const reply = (message) => sock.sendMessage(from,{ text: message }); // Fungsi untuk membalas pesan
-    const reply1 = (message) => sock1.sendMessage(from,{ text: message }); // Fungsi untuk membalas pesan
-    const reply2 = (message) => sock2.sendMessage(from,{ text: message }); // Fungsi untuk membalas pesan
+    const reply = (message) => sock.sendMessage(from, { text: message }); // Fungsi untuk membalas pesan
     const command = commandText.split(' ')[0].toLowerCase();
     const args = commandText.slice(command.length + 1).trim().split(/\s+/); // Ubah menjadi array
     const text = args.join(' '); // Ini akan bekerja dengan args sebagai array
@@ -93,95 +101,27 @@ const replyy = (teks) => {
         timeout: 10000,
         headers: { 'Content-Type': 'application/json' }
     });
-    
+
     switch (command) {
-        case 'bro': {
-            reply1('sock1')
-        break;
-        }
-        case 'bro2':{
-            reply2('sock2')
-            break;
-        }
-        case 'tes2': {
-            let nano_sad = `hallo`
-          let msg = generateWAMessageFromContent(from, {
-            viewOnceMessage: {
-              message: {
-                  "messageContextInfo": {
-                    "deviceListMetadata": {},
-                    "deviceListMetadataVersion": 2
-                  },
-                  interactiveMessage: proto.Message.InteractiveMessage.create({
-                    body: proto.Message.InteractiveMessage.Body.create({
-                      text: nano_sad
-                    }),
-                    footer: proto.Message.InteractiveMessage.Footer.create({
-                      text: global.namabot
-                    }),
-                    header: proto.Message.InteractiveMessage.Header.create({
-                          ...(await prepareWAMessageMedia({ image : fs.readFileSync('./data/image/thumb.jpg')}, { upload: sock.waUploadToServer})), 
-                            title: ``,
-                            gifPlayback: true,
-                            subtitle: 'ownername',
-                            hasMediaAttachment: false  
-                          }),
-                    nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
-                      buttons: [
-                      {
-                          "name": "quick_reply",
-                          "buttonParamsJson": `{"display_text":"Owner 👤","id":".owner"}`
-                        }
-                     ],
-                    }),
-                    contextInfo: {
-                            mentionedJid: [from], 
-                            forwardingScore: 999,
-                            isForwarded: true,
-                          forwardedNewsletterMessageInfo: {
-                            newsletterJid: '120363222395675670@newsletter',
-                            newsletterName: 'ownername',
-                            serverMessageId: 143
-                          }
-                          }
-                  })
-              }
-            }
-          }, {})
-          
-           await sock.relayMessage(msg.key.remoteJid, msg.message, {
-             messageId: msg.key.id
-           })
-          }
-          break
-          case 'testing':{
-            reply('hallo testing');
-            break;
-          }
-        case 'tes':{
-            const vcard = 'BEGIN:VCARD\n' // metadata of the contact card
-            + 'VERSION:3.0\n' 
-            + 'FN:Jeff Singh\n' // full name
-            + 'ORG:Ashoka Uni;\n' // the organization of the contact
-            + 'TEL;type=CELL;type=VOICE;waid=911234567890:+91 12345 67890\n' // WhatsApp ID + phone number
-            + 'END:VCARD'
-const sentMsg  = await sock.sendMessage(
-    from,
-    { 
-        contacts: { 
-            displayName: 'Jeff', 
-            contacts: [{ vcard }] 
-        }
-    }
-)
-sentMsg
+
+        case 'owner': {
+            const sentMsg = await sock.sendMessage(
+                from,
+                {
+                    contacts: {
+                        displayName: 'Haikal Dwi putra',
+                        contacts: [{ ownerontak }]
+                    }
+                }
+            )
+            sentMsg
             break;
         };
         case 'addvoucher-5000': {
             const result = addVoucher('24 jam', '5000', text);
             if (!isOwner(from)) {
-            reply('sorry')
-            return;
+                reply('sorry')
+                return;
             }
             reply(result);
             break;
@@ -189,8 +129,8 @@ sentMsg
         case 'addvoucher-3000': {
             const result = addVoucher('10 jam', '3000', text);
             if (!isOwner(from)) {
-            reply('sorry')
-            return;
+                reply('sorry')
+                return;
             }
             reply(result);
             break;
@@ -201,11 +141,11 @@ sentMsg
                 reply('Tidak ada voucher yang tersedia.');
                 break;
             }
-            
+
             let voucherList = 'Hai Ini adalah list dari harga voucher\n\n';
             voucherList += '[*] PAKET HEMAT [*]\n';
             voucherList += `+ Voucher 10 Jam - Rp.${vouchers.vouchers[0].harga}\n\n\n`;
-           // voucherList += `Voucher 24 Jam - Rp.${vouchers.vouchers[1].harga}\n\n`;
+            // voucherList += `Voucher 24 Jam - Rp.${vouchers.vouchers[1].harga}\n\n`;
             //voucherList += 'PAKET KARYAWAN\n';
             //voucherList += `Voucher 1 Minggu - Rp.${vouchers.vouchers[2].harga}\n`;
             //voucherList += `Voucher 1 Bulan - Rp.${vouchers.vouchers[3].harga}\n\n`;
@@ -223,7 +163,7 @@ sentMsg
             if (!isOwner(from)) {
                 reply('sorry')
                 return;
-                }
+            }
             const caption = `Voucher ini berlaku Selama 10 Jam. Di ervita.net`
             const vouchers = readVouchers();
             const voucher = vouchers.vouchers.find(v => v.harga === "3000" && !v.redeemed);
@@ -238,7 +178,7 @@ sentMsg
             break;
         }
         case 'v-5000': {
-            if(!isOwner(from)){
+            if (!isOwner(from)) {
                 reply('sorry')
                 return;
             }
@@ -255,7 +195,7 @@ sentMsg
             break;
         }
         case 'v-20000': {
-            if(!isOwner(from)){
+            if (!isOwner(from)) {
                 reply('sorry')
                 return;
             }
@@ -271,24 +211,24 @@ sentMsg
             }
             break;
         }
-            case 'v-50000': {
-                if(!isOwner(from)){
-                    reply('sorry')
-                    return;
-                }
-                const vouchers = readVouchers();
-                const voucher = vouchers.vouchers.find(v => v.harga === "50000" && !v.redeemed);
-    
-                if (voucher) {
-                    reply(`Kode voucher Anda adalah: ${voucher.kode}`);
-                    // Update status voucher menjadi redeemed
-                    updateVoucherStatus(voucher.kode, true);
-                } else {
-                    reply('Maaf, voucher dengan harga Rp.50000 tidak tersedia atau sudah digunakan.');
-                }
-                break;
+        case 'v-50000': {
+            if (!isOwner(from)) {
+                reply('sorry')
+                return;
             }
-            
+            const vouchers = readVouchers();
+            const voucher = vouchers.vouchers.find(v => v.harga === "50000" && !v.redeemed);
+
+            if (voucher) {
+                reply(`Kode voucher Anda adalah: ${voucher.kode}`);
+                // Update status voucher menjadi redeemed
+                updateVoucherStatus(voucher.kode, true);
+            } else {
+                reply('Maaf, voucher dengan harga Rp.50000 tidak tersedia atau sudah digunakan.');
+            }
+            break;
+        }
+
         case 'chord': {
 
             if (!text) return reply('Kamu mau cari chord lagu apa nih ');
@@ -743,128 +683,126 @@ sentMsg
             break;
 
         }
-
-
         case 'payment': {
-          
+
             let msg = generateWAMessageFromContent(
-              from,
-              {
-                viewOnceMessage: {
-                  message: {
-                    interactiveMessage: {
-                      body: {
-                        text: `Berikut daftar metode pembayaran saya ya~`
-                      },
-                      carouselMessage: {
-                        cards: [
-                          {
-                            header: proto.Message.InteractiveMessage.Header.create({
-                              ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/dana.jpg' } }, { upload: sock.waUploadToServer })),
-                              title: '',
-                              gifPlayback: true,
-                              subtitle: `'ownername'`,
-                              hasMediaAttachment: false
-                            }),
-                            body: { text: `> Klik tombol DANA di bawah\n> DANA A/N: ${global.andana}` },
-                            nativeFlowMessage: {
-                              buttons: [
-                                {
-                                  "name": "cta_copy",
-                                  "buttonParamsJson": `{\"display_text\":\"Payment DANA\",\"id\":\"123456789\",\"copy_code\":\"${global.nodana}\"}`
+                from,
+                {
+                    viewOnceMessage: {
+                        message: {
+                            interactiveMessage: {
+                                body: {
+                                    text: `Berikut daftar metode pembayaran saya ya~`
                                 },
-                              ],
-                            },
-                          },
-                          {
-                            header: proto.Message.InteractiveMessage.Header.create({
-                              ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/gopay.jpg' } }, { upload: sock.waUploadToServer })),
-                              title: '',
-                              gifPlayback: true,
-                              subtitle: `'ownername'`,
-                              hasMediaAttachment: false
-                            }),
-                            body: { text: `> Klik tombol GOPAY di bawah\n> GOPAY A/N: ${global.angopay}` },
-                            nativeFlowMessage: {
-                              buttons: [
-                                {
-                                  "name": "cta_copy",
-                                  "buttonParamsJson": `{\"display_text\":\"Payment GOPAY\",\"id\":\"123456789\",\"copy_code\":\"${global.nogopay}\"}`
+                                carouselMessage: {
+                                    cards: [
+                                        {
+                                            header: proto.Message.InteractiveMessage.Header.create({
+                                                ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/dana.jpg' } }, { upload: sock.waUploadToServer })),
+                                                title: '',
+                                                gifPlayback: true,
+                                                subtitle: `'ownername'`,
+                                                hasMediaAttachment: false
+                                            }),
+                                            body: { text: `> Klik tombol DANA di bawah\n> DANA A/N: ${global.andana}` },
+                                            nativeFlowMessage: {
+                                                buttons: [
+                                                    {
+                                                        "name": "cta_copy",
+                                                        "buttonParamsJson": `{\"display_text\":\"Payment DANA\",\"id\":\"123456789\",\"copy_code\":\"${global.nodana}\"}`
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                        {
+                                            header: proto.Message.InteractiveMessage.Header.create({
+                                                ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/gopay.jpg' } }, { upload: sock.waUploadToServer })),
+                                                title: '',
+                                                gifPlayback: true,
+                                                subtitle: `'ownername'`,
+                                                hasMediaAttachment: false
+                                            }),
+                                            body: { text: `> Klik tombol GOPAY di bawah\n> GOPAY A/N: ${global.angopay}` },
+                                            nativeFlowMessage: {
+                                                buttons: [
+                                                    {
+                                                        "name": "cta_copy",
+                                                        "buttonParamsJson": `{\"display_text\":\"Payment GOPAY\",\"id\":\"123456789\",\"copy_code\":\"${global.nogopay}\"}`
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                        {
+                                            header: proto.Message.InteractiveMessage.Header.create({
+                                                ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/seabank.png' } }, { upload: sock.waUploadToServer })),
+                                                title: '',
+                                                gifPlayback: true,
+                                                subtitle: `'ownername'`,
+                                                hasMediaAttachment: false
+                                            }),
+                                            body: { text: `> Klik tombol Seabank di bawah\n> Seabank A/N: ${global.anseabank}` },
+                                            nativeFlowMessage: {
+                                                buttons: [
+                                                    {
+                                                        "name": "cta_copy",
+                                                        "buttonParamsJson": `{\"display_text\":\"Payment Transfer Seabank\",\"id\":\"123456789\",\"copy_code\":\"${global.seabank}\"}`
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                        {
+                                            header: proto.Message.InteractiveMessage.Header.create({
+                                                ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/bri.png' } }, { upload: sock.waUploadToServer })),
+                                                title: '',
+                                                gifPlayback: true,
+                                                subtitle: `'ownername'`,
+                                                hasMediaAttachment: false
+                                            }),
+                                            body: { text: `> Klik tombol BRI di bawah\n> BRI A/N: ${global.anbri}` },
+                                            nativeFlowMessage: {
+                                                buttons: [
+                                                    {
+                                                        "name": "cta_copy",
+                                                        "buttonParamsJson": `{\"display_text\":\"Payment Transfer BRI\",\"id\":\"123456789\",\"copy_code\":\"${global.rekbri}\"}`
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                        {
+                                            header: proto.Message.InteractiveMessage.Header.create({
+                                                ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/qris.jpg' } }, { upload: sock.waUploadToServer })),
+                                                title: '',
+                                                gifPlayback: true,
+                                                subtitle: `'ownername'`,
+                                                hasMediaAttachment: false
+                                            }),
+                                            body: { text: `> SCAN di atas / klik tombol` },
+                                            nativeFlowMessage: {
+                                                buttons: [
+                                                    {
+                                                        "name": "cta_url",
+                                                        "buttonParamsJson": `{\"display_text\":\"Payment QRIS\",\"url\":\"https://i.ibb.co.com/N3fsFwQ/qr-ID1024325942133-12-09-24-172608640.jpg\",\"merchant_url\":\"https://www.google.com\"}`
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                    ],
+                                    //  messageVersion: 1,
                                 },
-                              ],
                             },
-                          },
-                          {
-                            header: proto.Message.InteractiveMessage.Header.create({
-                              ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/seabank.png' } }, { upload: sock.waUploadToServer })),
-                              title: '',
-                              gifPlayback: true,
-                              subtitle: `'ownername'`,
-                              hasMediaAttachment: false
-                            }),
-                            body: { text: `> Klik tombol Seabank di bawah\n> Seabank A/N: ${global.anseabank}` },
-                            nativeFlowMessage: {
-                              buttons: [
-                                {
-                                  "name": "cta_copy",
-                                  "buttonParamsJson": `{\"display_text\":\"Payment Transfer Seabank\",\"id\":\"123456789\",\"copy_code\":\"${global.seabank}\"}`
-                                },
-                              ],
-                            },
-                          },
-                          {
-                            header: proto.Message.InteractiveMessage.Header.create({
-                              ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/bri.png' } }, { upload: sock.waUploadToServer })),
-                              title: '',
-                              gifPlayback: true,
-                              subtitle: `'ownername'`,
-                              hasMediaAttachment: false
-                            }),
-                            body: { text: `> Klik tombol BRI di bawah\n> BRI A/N: ${global.anbri}` },
-                            nativeFlowMessage: {
-                              buttons: [
-                                {
-                                  "name": "cta_copy",
-                                  "buttonParamsJson": `{\"display_text\":\"Payment Transfer BRI\",\"id\":\"123456789\",\"copy_code\":\"${global.rekbri}\"}`
-                                },
-                              ],
-                            },
-                          },
-                          {
-                            header: proto.Message.InteractiveMessage.Header.create({
-                              ...(await prepareWAMessageMedia({ image: { url: './data/image/payment/qris.jpg' } }, { upload: sock.waUploadToServer })),
-                              title: '',
-                              gifPlayback: true,
-                              subtitle: `'ownername'`,
-                              hasMediaAttachment: false
-                            }),
-                            body: { text: `> SCAN di atas / klik tombol` },
-                            nativeFlowMessage: {
-                              buttons: [
-                                {
-                                  "name": "cta_url",
-                                  "buttonParamsJson": `{\"display_text\":\"Payment QRIS\",\"url\":\"https://i.ibb.co.com/N3fsFwQ/qr-ID1024325942133-12-09-24-172608640.jpg\",\"merchant_url\":\"https://www.google.com\"}`
-                                },
-                              ],
-                            },
-                          },
-                        ],
-                      //  messageVersion: 1,
-                      },
+                        },
                     },
-                  },
                 },
-              },
-              
-              { quoted: fkontak }
+
+                { quoted: fkontak }
             );
-          
+
             await sock.relayMessage(msg.key.remoteJid, msg.message, {
-              messageId: msg.key.id,
+                messageId: msg.key.id,
             });
-          }
-          break;
-          
+        }
+            break;
+
 
 
 
