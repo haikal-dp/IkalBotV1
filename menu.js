@@ -61,10 +61,10 @@ const addVoucher = (paket, harga, kode) => {
     fs.writeFileSync(filePath, JSON.stringify(vouchers, null, 2));
     return `Voucher baru berhasil ditambahkan: ${paket} - Rp.${harga} - Kode: ${kode}`;
 };
-module.exports = handleMenu = async (sock,sock1,sock2, from, commandText) => {
+module.exports = handleMenu = async (sock, from, commandText) => {
     const fkontak = { key: {participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: `status@broadcast` } : {}) }, message: { 'contactMessage': { 'displayName': `'ownername'`, 'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;${`'ownername'`},;;;\nFN:${`'ownername'`}\nitem1.TEL;waid=6285892928715:6285892928715\nitem1.X-ABLabel:Mobile\nEND:VCARD`, 'jpegThumbnail': global.thumb, thumbnail: global.thumb,sendEphemeral: true}}}
 	
-const reply2 = (teks) => {
+const replyy = (teks) => {
     sock.sendMessage(from,
     { text: teks,
     contextInfo:{
@@ -75,13 +75,15 @@ const reply2 = (teks) => {
     "showAdAttribution": true,
     "containsAutoReply": true,
     "title": `${global.namabot}`,
-    "body": `hai 👋🏻`,
+    "body": `instagram Saya`,
     "previewType": "IMAGE",
     "thumbnailUrl": 'https://i.ibb.co/5vGsdR2/thumb.jpg',
     "sourceUrl": 'https://instagram.com/haikung.my.id'}}},
     { quoted: fkontak})
     }
     const reply = (message) => sock.sendMessage(from,{ text: message }); // Fungsi untuk membalas pesan
+    const reply1 = (message) => sock1.sendMessage(from,{ text: message }); // Fungsi untuk membalas pesan
+    const reply2 = (message) => sock2.sendMessage(from,{ text: message }); // Fungsi untuk membalas pesan
     const command = commandText.split(' ')[0].toLowerCase();
     const args = commandText.slice(command.length + 1).trim().split(/\s+/); // Ubah menjadi array
     const text = args.join(' '); // Ini akan bekerja dengan args sebagai array
@@ -93,10 +95,14 @@ const reply2 = (teks) => {
     });
     
     switch (command) {
-        case 'bro':{
-            sock
+        case 'bro': {
+            reply1('sock1')
         break;
-    }
+        }
+        case 'bro2':{
+            reply2('sock2')
+            break;
+        }
         case 'tes2': {
             let nano_sad = `hallo`
           let msg = generateWAMessageFromContent(from, {
