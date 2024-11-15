@@ -1,5 +1,5 @@
 node_modules/
-baileys/
+bailey/
 session/
 database/user.json/
 session1/
@@ -8,3 +8,4 @@ package-lock.json/
 111/
 222/
 IkalBotV1.zip
+database/foto

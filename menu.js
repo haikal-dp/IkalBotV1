@@ -61,10 +61,10 @@ const addVoucher = (paket, harga, kode) => {
     fs.writeFileSync(filePath, JSON.stringify(vouchers, null, 2));
     return `Voucher baru berhasil ditambahkan: ${paket} - Rp.${harga} - Kode: ${kode}`;
 };
-module.exports = handleMenu = async (sock, from, commandText) => {
+module.exports = handleMenu = async (sock,sock1,sock2, from, commandText) => {
     const fkontak = { key: {participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: `status@broadcast` } : {}) }, message: { 'contactMessage': { 'displayName': `'ownername'`, 'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;${`'ownername'`},;;;\nFN:${`'ownername'`}\nitem1.TEL;waid=6285892928715:6285892928715\nitem1.X-ABLabel:Mobile\nEND:VCARD`, 'jpegThumbnail': global.thumb, thumbnail: global.thumb,sendEphemeral: true}}}
 	
-const replynano = (teks) => {
+const reply2 = (teks) => {
     sock.sendMessage(from,
     { text: teks,
     contextInfo:{
@@ -93,6 +93,10 @@ const replynano = (teks) => {
     });
     
     switch (command) {
+        case 'bro':{
+            sock
+        break;
+    }
         case 'tes2': {
             let nano_sad = `hallo`
           let msg = generateWAMessageFromContent(from, {

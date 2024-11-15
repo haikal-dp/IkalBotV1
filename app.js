@@ -1,7 +1,7 @@
 require('./setting');
 const express = require('express');
 const path = require('path');
-const { startBot } = require('./index');
+const { startBot, replynano } = require('./index');
 const app = express();
 const axios = require('axios');
 const secret = require('./setting/modul').secret;
@@ -37,7 +37,7 @@ startBot().then((result) => {
 }).catch((err) => {
     console.error('Gagal memulai bot:', err);
 });
-
+require('./setting.js')
 app.get('/salon', salon)
 app.get('/', index);
 app.get('/foto', foto);
@@ -79,15 +79,33 @@ app.post('/kirimpesan', async (req, res) => {
         console.error('Gagal mengirim pesan:', err);
         res.status(500).send({ error: 'Gagal mengirim pesan' });
     }
-});
-
+});	
 app.post('/kirimpesan2', async (req, res) => {
     const { nomor, pesan } = req.body;
+    
+const fkontak = { key: {participant: `0@s.whatsapp.net`, ...(nomor + '@s.whatsapp.net' ? { remoteJid: `status@broadcast` } : {}) }, message: { 'contactMessage': { 'displayName': `Haikal Dwi Putra`, 'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;${`'ownername'`},;;;\nFN:${`'ownername'`}\nitem1.TEL;waid=6285892928715:6285892928715\nitem1.X-ABLabel:Mobile\nEND:VCARD`, 'jpegThumbnail': global.thumb, thumbnail: global.thumb,sendEphemeral: true}}}
+
     if (!nomor || !pesan) {
         return res.status(400).send({ error: 'Nomor dan pesan harus disertakan!' });
     }
     try {
-        await sock2.sendMessage(nomor + '@s.whatsapp.net', { text: pesan });
+        sock2.sendMessage(nomor + '@s.whatsapp.net',
+            { text: pesan,
+                contextInfo:{
+                mentionedJid:[nomor + '@s.whatsapp.net'],
+                forwardingScore: 0,
+                isForwarded: false,
+                "externalAdReply": {
+                "showAdAttribution": true,
+                "containsAutoReply": true,
+                "title": `Haikal Dwi Putra`,
+                "body": `Ini Portofolio saya👇`,
+                "previewType": "VIDEO",
+                "thumbnailUrl": 'https://telegra.ph/file/49f2b139a2aff4bb934f7.jpg',
+                "sourceUrl": 'https://haikung.my.id'}}},
+                {})
+        //replynano
+        //await sock2.sendMessage(nomor + '@s.whatsapp.net', { text: pesan });
         res.send({ status: 'Pesan berhasil dikirim!' });
         console.log('Pesan dikirim');
     } catch (err) {
