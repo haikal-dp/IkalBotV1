@@ -7,7 +7,7 @@ global.autoread = true //bot auto read? true/false
 global.session = false
 
 //express
-global.domain = 'https://haikung.my.id'
+global.domain = 'https://bot.haikung.my.id'
 global.port = 80
 //database express
 global.hostdb = 'localhost'
