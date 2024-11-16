@@ -12,5 +12,5 @@ global.port = 80
 //database express
 global.hostdb = 'localhost'
 global.userdb = 'haikungm_haikal'//user database
-global.passdb = 'haikallol'//password database
+global.passdb = 'Haikallol'//password database
 global.namadb = 'haikungm_bot'//nama database

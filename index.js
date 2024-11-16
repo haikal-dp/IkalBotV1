@@ -86,7 +86,7 @@ function setupEventListeners(sock, saveCreds, sockId) {
     sock.ev.on('messages.upsert', async (msg) => {
         try {
             const message = msg.messages[0];
-            if (!message.messagee) return;
+            if (!message.message) return;
 
             const from = message.key.remoteJid;
             const textMessage = message.message.conversation || message.message.extendedTextMessage?.text || '';
