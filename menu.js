@@ -803,7 +803,19 @@ module.exports = handleMenu = async (sock, from, commandText) => {
         }
             break;
 
-
+            case 'setbotbio':{
+                if(!isOwner){
+                    reply('kamu siapa?')
+                    return
+                }
+                
+                    
+                sock.updateProfileStatus(text);
+                
+                reply('done')
+                break;
+            
+            }
        
 
 
