@@ -86,7 +86,7 @@ function setupEventListeners(sock, saveCreds, sockId) {
     sock.ev.on('messages.upsert', async (msg) => {
         try {
             const message = msg.messages[0];
-            if (!message.message) return;
+            if (!message.message || message.key.fromMe) return;
 
             const from = message.key.remoteJid;
             const textMessage = message.message.conversation || message.message.extendedTextMessage?.text || '';
@@ -102,11 +102,11 @@ function setupEventListeners(sock, saveCreds, sockId) {
             //  } catch (error) {
             //     console.error('Gagal mengirim log ke server:', error);
             // }
-            if (isGroup) {
+             if (isGroup) {
                 const sender = message.key.participant || message.key.remoteJid;
                 await handleGroupMessage(sock, from, sender);
             } else {
-                await handleNewUser(sock, from);
+                await handleNewUser (sock, from);
             }
 
             if (message.message.imageMessage) {

@@ -1,6 +1,7 @@
 const fs = require('fs');
+const path = require('path');
 const {groupDatabasePath,userDatabasePath,roleDatabasePath} = require('./savedata.js')
-
+require('../../setting.js')
 // Fungsi untuk memberi tahu pemilik bot tentang error
 const notifyOwner = async (sock, error) => {
     const roleData = fs.existsSync(roleDatabasePath) ? JSON.parse(fs.readFileSync(roleDatabasePath)) : { owners: [] };
@@ -10,7 +11,7 @@ const notifyOwner = async (sock, error) => {
 };
 
 // Fungsi untuk memeriksa dan menyimpan user baru
-const handleNewUser = async (sock, userJid) => {
+const handleNewUser  = async (sock, userJid) => {
     try {
         // Baca database user yang ada
         let users = [];
@@ -23,24 +24,61 @@ const handleNewUser = async (sock, userJid) => {
 
         if (!userExists) {
             // Jika user baru, tambahkan ke database
-            const newUser = {
+            const newUser  = {
                 jid: userJid,
                 firstInteraction: new Date().toISOString(),
                 lastInteraction: new Date().toISOString(),
                 messageCount: 1
             };
 
-            users.push(newUser);
+            users.push(newUser );
 
             // Simpan ke file database
             fs.writeFileSync(userDatabasePath, JSON.stringify(users, null, 2));
 
-            // Kirim pesan selamat datang
-            // await sock.sendMessage(userJid, { 
-            //     text: `Selamat datang 👋\n Terimakasih telah menghubungi saya, ada yang bisa saya bantu?` 
-            // });
+            // Tunggu 10 detik sebelum mengirim pesan
+            await new Promise(resolve => setTimeout(resolve, 12000));
 
-            console.log(`User baru tersimpan: ${userJid}`);
+            // Kirim pesan selamat datang
+            await sock.sendMessage(userJid, { 
+                text: global.hehe0
+            });
+            await new Promise(resolve => setTimeout(resolve, 15000));
+
+            // Kirim pesan selamat datang
+            await sock.sendMessage(userJid, { 
+                text: global.hehe
+            });
+            
+            await new Promise(resolve => setTimeout(resolve, 10000));
+
+            await sock.sendMessage(userJid,{
+                text: 'sampai sini bisa di fahami?\nSaya akan melanjutkan penjelasan '
+            })
+            await new Promise(resolve => setTimeout(resolve, 30000));
+
+            // Kirim pesan kedua setelah pesan pertama
+            await sock.sendMessage(userJid, { 
+                text: global.hehe2
+            });
+            
+            await new Promise(resolve => setTimeout(resolve, 15000));
+
+            // Kirim pesan suara
+            const voiceNotePath = path.join(__dirname, '..', '..', 'database', 'audio', 'gg.ogg');
+            
+            const vd  = path.join(__dirname, '..', '..', 'database', 'audio', 'tes.mp4');
+            await sock.sendMessage(userJid, {
+                audio: { url: voiceNotePath },
+                mimetype: 'audio/mpeg',
+                ptt: true
+            });
+            
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            
+                sock.sendMessage(userJid, { caption: global.vmess, video: { url: vd } })
+            
+            console.log(`User  baru tersimpan: ${userJid}`);
         } else {
             // Update lastInteraction dan messageCount untuk user yang sudah ada
             users = users.map(user => {
