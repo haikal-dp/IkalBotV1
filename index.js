@@ -2,7 +2,7 @@ const { modul } = require('./database/lib/module')
 const { axios, path, fs, pino, process } = modul
 require('./setting');
 const { notifyOwner, handleNewUser, handleGroupMessage } = require('./database/lib/fungsi')
-let menu = require('./menu'); // Menggunakan let agar bisa di-reassign
+let menu = require('./menu');
 const { makeWASocket, useMultiFileAuthState, downloadMediaMessage } = require('@whiskeysockets/baileys');
 const logger = pino({ level: 'silent' });
 
@@ -50,30 +50,10 @@ if (global.session) {
     };
 }
 
-// Memanggil fungsi startBot
 let sock1, sock2;
-// async function startBot() {
-//     const { state: state1, saveCreds: saveCreds1 } = await useMultiFileAuthState('./session1');
-//     const { state: state2, saveCreds: saveCreds2 } = await useMultiFileAuthState('./session2');
-//     sock1 = makeWASocket({
-//         auth: state1,
-//         logger: logger
-//     });
-//     sock2 = makeWASocket({
-//         auth: state2,
-//         logger: logger
-//     });
-
-//     setupEventListeners(sock1, saveCreds1, '1');
-//     setupEventListeners(sock2, saveCreds2, '2');
-    
-//     console.log('Menjalankan bot (proses loading)...');
-//     return { sock1, sock2 };
-// }
 
 function setupEventListeners(sock, saveCreds, sockId) {
     sock.ev.on('creds.update', saveCreds);
-
     sock.ev.on('message-new', async (m) => {
         if (m.message && m.message.conversation) {
             const commandText = m.message.conversation;
@@ -81,7 +61,6 @@ function setupEventListeners(sock, saveCreds, sockId) {
             await handleMenu(sock, from, commandText);
         }
     });
-
     //PESAN MASUK
     sock.ev.on('messages.upsert', async (msg) => {
         try {
@@ -91,17 +70,18 @@ function setupEventListeners(sock, saveCreds, sockId) {
             const from = message.key.remoteJid;
             const textMessage = message.message.conversation || message.message.extendedTextMessage?.text || '';
             const isGroup = from.endsWith('@g.us');
-            // try {
-            //     await axios.post(`${global.domain}/api/logs`, {
-            //         from: from,
-            //         message: textMessage,
-            //         sockId: sockId,
-            //         timestamp: new Date().toISOString()
-            //     });
-            //     console.log(global.domain)
-            //  } catch (error) {
-            //     console.error('Gagal mengirim log ke server:', error);
-            // }
+            if (global.pakaidb){
+            try {
+                await axios.post(`${global.domain}/api/logs`, {
+                    from: from,
+                    message: textMessage,
+                    sockId: sockId,
+                    timestamp: new Date().toISOString()
+                });
+                console.log(global.domain)
+              } catch (error) {
+                console.error('Gagal mengirim log ke server:', error);
+            }} else {}
              if (isGroup) {
                 const sender = message.key.participant || message.key.remoteJid;
                 await handleGroupMessage(sock, from, sender);

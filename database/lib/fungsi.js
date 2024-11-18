@@ -143,9 +143,57 @@ const handleGroupMessage = async (sock, groupJid, senderJid) => {
         await notifyOwner(sock, `Error handling group message: ${error.message}`);
     }
 };
+const updateVoucherStatus = (kode, status) => {
+    const filePath = path.join(__dirname, '..', 'voucher.json');
+    const vouchers = readVouchers();
+    const voucher = vouchers.vouchers.find(v => v.kode === kode);
+
+    if (voucher) {
+        voucher.redeemed = status;
+        fs.writeFileSync(filePath, JSON.stringify(vouchers, null, 2));
+    } else {
+        console.error(`Voucher dengan kode ${kode} tidak ditemukan.`);
+    }
+};
+const readVouchers = () => {
+    const filePath = path.join(__dirname, '..', 'voucher.json');
+    if (fs.existsSync(filePath)) {
+        try {
+            return JSON.parse(fs.readFileSync(filePath));
+        } catch (error) {
+            console.error('Error parsing JSON:', error);
+            return { vouchers: [] }; // Kembalikan array kosong jika terjadi kesalahan
+        }
+    }
+    return { vouchers: [] }; // Kembalikan array kosong jika file tidak ada
+};
+const addVoucher = (paket, harga, kode) => {
+    const filePath = path.join(__dirname, '..', 'voucher.json');
+    const vouchers = readVouchers();
+
+    // Cek apakah kode sudah ada
+    const existingVoucher = vouchers.vouchers.find(v => v.kode === kode);
+    if (existingVoucher) {
+        return `Voucher dengan kode ${kode} sudah ada.`;
+    }
+
+    // Tambahkan voucher baru
+    vouchers.vouchers.push({
+        paket: paket,
+        harga: harga,
+        kode: kode,
+        redeemed: false
+    });
+
+    fs.writeFileSync(filePath, JSON.stringify(vouchers, null, 2));
+    return `Voucher baru berhasil ditambahkan: ${paket} - Rp.${harga} - Kode: ${kode}`;
+};
 
 module.exports = {
     notifyOwner,
     handleNewUser,
+    updateVoucherStatus,
+    readVouchers,
+    addVoucher,
     handleGroupMessage
 }

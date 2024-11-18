@@ -8,62 +8,30 @@ const { isOwner, isPremium } = require('./database/lib/role');
 // Path ke file owner.json dan user.json
 const roleDatabasePath = path.join(__dirname, 'database', 'role.json');
 const userDatabasePath = path.join(__dirname, 'database', 'user.json');
+const {updateVoucherStatus,addVoucher,readVouchers} = require('./database/lib/Fungsi');
 
-// Fungsi untuk membaca data voucher dari file JSON
-const readVouchers = () => {
-    const filePath = path.join(__dirname, 'database', 'voucher.json');
-    if (fs.existsSync(filePath)) {
-        try {
-            return JSON.parse(fs.readFileSync(filePath));
-        } catch (error) {
-            console.error('Error parsing JSON:', error);
-            return { vouchers: [] }; // Kembalikan array kosong jika terjadi kesalahan
-        }
-    }
-    return { vouchers: [] }; // Kembalikan array kosong jika file tidak ada
-};
-
-// Fungsi untuk memperbarui status voucher
-const updateVoucherStatus = (kode, status) => {
-    const filePath = path.join(__dirname, 'database', 'voucher.json');
-    const vouchers = readVouchers();
-    const voucher = vouchers.vouchers.find(v => v.kode === kode);
-
-    if (voucher) {
-        voucher.redeemed = status;
-        fs.writeFileSync(filePath, JSON.stringify(vouchers, null, 2));
-    } else {
-        console.error(`Voucher dengan kode ${kode} tidak ditemukan.`);
-    }
-};
-
-
-
-// Fungsi untuk menambahkan voucher baru
-const addVoucher = (paket, harga, kode) => {
-    const filePath = path.join(__dirname, 'database', 'voucher.json');
-    const vouchers = readVouchers();
-
-    // Cek apakah kode sudah ada
-    const existingVoucher = vouchers.vouchers.find(v => v.kode === kode);
-    if (existingVoucher) {
-        return `Voucher dengan kode ${kode} sudah ada.`;
-    }
-
-    // Tambahkan voucher baru
-    vouchers.vouchers.push({
-        paket: paket,
-        harga: harga,
-        kode: kode,
-        redeemed: false
-    });
-
-    fs.writeFileSync(filePath, JSON.stringify(vouchers, null, 2));
-    return `Voucher baru berhasil ditambahkan: ${paket} - Rp.${harga} - Kode: ${kode}`;
-};
 module.exports = handleMenu = async (sock, from, commandText) => {
     const fkontak = { key: { participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: `status@broadcast` } : {}) }, message: { 'contactMessage': { 'displayName': `'ownername'`, 'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;${`'ownername'`},;;;\nFN:${`'ownername'`}\nitem1.TEL;waid=6285892928715:6285892928715\nitem1.X-ABLabel:Mobile\nEND:VCARD`, 'jpegThumbnail': global.thumb, thumbnail: global.thumb, sendEphemeral: true } } }
+function updateSettingFile() {
+    const fs = require('fs');
+    const settingPath = './setting.js';
 
+    const content = `
+global.session = ${global.session};
+global.autoread = ${global.autoread};
+global.pakaidb = ${global.pakaidb};
+`;
+
+    try {
+        fs.writeFileSync(settingPath, content, 'utf-8');
+        // Reload file setting.js agar perubahan diterapkan
+        delete require.cache[require.resolve(settingPath)];
+        require(settingPath);
+    } catch (err) {
+        console.error('Error saat mengubah setting.js:', err);
+        reply('Terjadi kesalahan saat memperbarui pengaturan.');
+    }
+}
     const ownerontak = 'BEGIN:VCARD\n' // metadata of the contact card
         + 'VERSION:3.0\n'
         + `FN:${global.namaowner}\n`// full name
@@ -103,7 +71,84 @@ module.exports = handleMenu = async (sock, from, commandText) => {
     });
 
     switch (command) {
+      
+      case 'set':
+    if (!args[0]) {
+        // Jika tidak ada argumen, beri tahu pengguna tentang opsi yang tersedia
+        reply('Perintah `set` memiliki beberapa opsi: \n' +
+            '1. set session 1/2\n' +
+            '2. set autoread on/off\n' +
+            '3. set pakaidb on/off');
+        break;
+    }
 
+    const settingOption = args[0].toLowerCase();
+
+    // Cek pilihan pengaturan yang diminta
+    switch (settingOption) {
+        case 'session':
+            if (!args[1]) {
+                reply('Silakan tentukan nilai: set session 1 untuk false, set session 2 untuk true');
+                break;
+            }
+            const sessionValue = args[1].toLowerCase();
+            if (sessionValue === '1') {
+                global.session = false;
+            } else if (sessionValue === '2') {
+                global.session = true;
+            } else {
+                reply('Pilihan tidak valid untuk session. Gunakan 1 atau 2');
+                break;
+            }
+            updateSettingFile(); // Update setting.js
+            reply(`Pengaturan 'session' berhasil diubah menjadi ${global.session}`);
+            break;
+
+        case 'autoread':
+            if (!args[1]) {
+                reply('Silakan tentukan nilai: set autoread on atau set autoread off');
+                break;
+            }
+            const autoreadValue = args[1].toLowerCase();
+            if (autoreadValue === 'on') {
+                global.autoread = true;
+            } else if (autoreadValue === 'off') {
+                global.autoread = false;
+            } else {
+                reply('Pilihan tidak valid untuk autoread. Gunakan on atau off');
+                break;
+            }
+            updateSettingFile(); // Update setting.js
+            reply(`Pengaturan 'autoread' berhasil diubah menjadi ${global.autoread ? 'ON' : 'OFF'}`);
+            break;
+
+        case 'pakaidb':
+            if (!args[1]) {
+                reply('Silakan tentukan nilai: set pakaidb on atau set pakaidb off');
+                break;
+            }
+            const pakaidbValue = args[1].toLowerCase();
+            if (pakaidbValue === 'on') {
+                global.pakaidb = true;
+            } else if (pakaidbValue === 'off') {
+                global.pakaidb = false;
+            } else {
+                reply('Pilihan tidak valid untuk pakaidb. Gunakan on atau off');
+                break;
+            }
+            updateSettingFile(); // Update setting.js
+            reply(`Pengaturan 'pakaidb' berhasil diubah menjadi ${global.pakaidb ? 'ON' : 'OFF'}`);
+            break;
+
+        default:
+            reply('Pilihan tidak valid. Gunakan perintah: set session, set autoread, atau set pakaidb');
+            break;
+    }
+    break;
+      
+      
+      
+      
         case 'owner': {
             const sentMsg = await sock.sendMessage(
                 from,
