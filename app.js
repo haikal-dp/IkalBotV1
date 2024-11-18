@@ -142,7 +142,7 @@ app.use(error403);
 app.use(error404);
 app.use(error500);
 
-app.listen(port, () => {
+app.listen(port,'localhost', () => {
     console.log(`Server berjalan di port ${port}`);
 });
 

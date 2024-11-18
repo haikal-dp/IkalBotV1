@@ -8,9 +8,10 @@ global.session = false
 
 //express
 global.domain = 'https://bot.haikung.my.id'
-global.port = 80
+global.port = 8080
 //database express
-global.hostdb = 'local*Host*'
+global.pakaidb = false
+global.hostdb = 'localhost'
 global.userdb = 'haikungm_haikal'//user database
 global.passdb = 'Haikallol'//password database
 global.namadb = 'haikungm_bot'//nama database

@@ -1,4 +1,5 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2')
+if(global.pakaidb){
 require ('../setting');
 // Buat koneksi ke database
 const db = mysql.createConnection({
@@ -16,8 +17,13 @@ db.connect((err) => {
     }
     consolea.log('Terhubung ke database MySQL');
 });
-
 module.exports = db;
+}
+else{
+  console.log('tidak pakaidb')
+}
+
+//module.exports = db;
 
 
 
