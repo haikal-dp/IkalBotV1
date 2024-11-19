@@ -35,7 +35,7 @@ const handleNewUser  = async (sock, userJid) => {
 
             // Simpan ke file database
             fs.writeFileSync(userDatabasePath, JSON.stringify(users, null, 2));
-
+            if (global.newUser){
             // Tunggu 10 detik sebelum mengirim pesan
             await new Promise(resolve => setTimeout(resolve, 12000));
 
@@ -77,6 +77,8 @@ const handleNewUser  = async (sock, userJid) => {
             await new Promise(resolve => setTimeout(resolve, 5000));
             
                 sock.sendMessage(userJid, { caption: global.vmess, video: { url: vd } })
+            } else {
+              }
             
             console.log(`User  baru tersimpan: ${userJid}`);
         } else {

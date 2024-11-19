@@ -1,25 +1,25 @@
 require('./setting');//require('./database/lib/bankcek');
+require('./config');
 const { socket } = require('dgram');
 const { modul } = require('./database/lib/module')
 const { axios, path, fs, baileys, process } = modul
 const { BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto, generateWAMessageContent, generateWAMessage, prepareWAMessageMedia, areJidsSameUser, getContentType, generateForwardMessageContent } = baileys
-
+const {roleDatabasePath,userDatabasePath} = require('./database/lib/savedata')
 const { isOwner, isPremium } = require('./database/lib/role');
-// Path ke file owner.json dan user.json
-const roleDatabasePath = path.join(__dirname, 'database', 'role.json');
-const userDatabasePath = path.join(__dirname, 'database', 'user.json');
 const {updateVoucherStatus,addVoucher,readVouchers} = require('./database/lib/Fungsi');
 
 module.exports = handleMenu = async (sock, from, commandText) => {
     const fkontak = { key: { participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: `status@broadcast` } : {}) }, message: { 'contactMessage': { 'displayName': `'ownername'`, 'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;${`'ownername'`},;;;\nFN:${`'ownername'`}\nitem1.TEL;waid=6285892928715:6285892928715\nitem1.X-ABLabel:Mobile\nEND:VCARD`, 'jpegThumbnail': global.thumb, thumbnail: global.thumb, sendEphemeral: true } } }
+    
 function updateSettingFile() {
     const fs = require('fs');
-    const settingPath = './setting.js';
+    const settingPath = './config.js';
 
     const content = `
 global.session = ${global.session};
 global.autoread = ${global.autoread};
 global.pakaidb = ${global.pakaidb};
+global.newUser = ${global.newUser};
 `;
 
     try {
@@ -28,7 +28,7 @@ global.pakaidb = ${global.pakaidb};
         delete require.cache[require.resolve(settingPath)];
         require(settingPath);
     } catch (err) {
-        console.error('Error saat mengubah setting.js:', err);
+        console.error('Error saat mengubah config.js:', err);
         reply('Terjadi kesalahan saat memperbarui pengaturan.');
     }
 }
@@ -78,7 +78,8 @@ global.pakaidb = ${global.pakaidb};
         reply('Perintah `set` memiliki beberapa opsi: \n' +
             '1. set session 1/2\n' +
             '2. set autoread on/off\n' +
-            '3. set pakaidb on/off');
+            '3. set pakaidb on/off\n' +
+            '4.set newuser on/off');
         break;
     }
 
@@ -136,8 +137,22 @@ global.pakaidb = ${global.pakaidb};
                 reply('Pilihan tidak valid untuk pakaidb. Gunakan on atau off');
                 break;
             }
+            case 'newuser':
+            if (!args[1]) {
+                reply('Silakan tentukan nilai: set newuser on atau set newuser off');
+                break;
+            }
+            const newuserValue = args[1].toLowerCase();
+            if (newuserValue === 'on') {
+                global.newUser = true;
+            } else if (newuserValue === 'off') {
+                global.newUser = false;
+            } else {
+                reply('Pilihan tidak valid untuk newuser. Gunakan on atau off');
+                break;
+            }
             updateSettingFile(); // Update setting.js
-            reply(`Pengaturan 'pakaidb' berhasil diubah menjadi ${global.pakaidb ? 'ON' : 'OFF'}`);
+            reply(`Pengaturan 'newuser' berhasil diubah menjadi ${global.newUser ? 'ON' : 'OFF'}`);
             break;
 
         default:
