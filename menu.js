@@ -1,5 +1,6 @@
 require('./setting');//require('./database/lib/bankcek');
 require('./config');
+const math = require('mathjs');
 const { socket } = require('dgram');
 const { modul } = require('./database/lib/module')
 const { axios, path, fs, baileys, process } = modul
@@ -71,9 +72,26 @@ global.newUser = ${global.newUser};
     });
 
     switch (command) {
-      
+      case 'kalkulator': {
+            if (!text) {
+                await sock.sendMessage(from, { text: 'Silakan masukkan ekspresi matematika setelah `kalkulator`.\n\nContoh:\n1. kalkulator 1+1+8+9+7x7x5-2x6=\n2. kalkulator 2x99+67-182+888=' });
+                break;
+            }
+
+            const cleanedExpression = text.replace(/x/gi, '*').replace(/=/g, ''); // Ganti 'x' dengan '*' dan hapus '='
+            try {
+                const result = math.evaluate(cleanedExpression); // Evaluasi ekspresi menggunakan math.js
+                await sock.sendMessage(from, {
+                    text: `Hasil dari ekspresi:\n*${args}*\n\nAdalah: *${result}*`,
+                });
+            } catch (error) {
+                await sock.sendMessage(from, { text: 'Maaf, ekspresi matematika tidak valid. Pastikan formatnya benar.\n\nContoh:\n1. kalkulator 1+1+8+9+7x7x5-2x6=\n2. kalkulator 2x99+67-182+888=' });
+            }
+            break;
+        }
+
       case 'set':
-    if (!args[0]) {
+    if (!text) {
         // Jika tidak ada argumen, beri tahu pengguna tentang opsi yang tersedia
         reply('Perintah `set` memiliki beberapa opsi: \n' +
             '1. set session 1/2\n' +

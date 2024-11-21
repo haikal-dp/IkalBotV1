@@ -16,7 +16,13 @@
       "paket": "10 jam",
       "harga": "3000",
       "kode": "TES1",
-      "redeemed": false
+      "redeemed": true
+    },
+    {
+      "paket": "10 jam",
+      "harga": "3000",
+      "kode": "Yx7Bds",
+      "redeemed": true
     }
   ]
 }
