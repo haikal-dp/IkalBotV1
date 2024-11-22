@@ -72,6 +72,48 @@ global.newUser = ${global.newUser};
     });
 
     switch (command) {
+      case 'cekwa': {
+    if (!args[0]) {
+        reply('Masukkan range nomor! Contoh: cekwa 6285173229110-6285173229120');
+        return;
+    }
+
+    const range = args[0].split('-');
+    if (range.length !== 2 || isNaN(range[0]) || isNaN(range[1])) {
+        reply('Format range tidak valid! Gunakan format: cekwa 6285173229110-6285173229120');
+        return;
+    }
+
+    const start = BigInt(range[0]);
+    const end = BigInt(range[1]);
+    if (start >= end) {
+        reply('Range tidak valid! Nomor awal harus lebih kecil dari nomor akhir.');
+        return;
+    }
+
+    reply('Sedang memeriksa nomor, harap tunggu...');
+
+    let results = '';
+    for (let i = start; i <= end; i++) {
+        const number = i.toString();
+        const jid = `${number}@s.whatsapp.net`;
+
+        try {
+            const check = await sock.onWhatsApp(jid);
+            if (check.length > 0) {
+                results += `*##${number} = sudah ada*\n`;
+            } else {
+                results += `${number} = belum ada\n`;
+            }
+        } catch (err) {
+            results += `${number} = error memeriksa\n`;
+        }
+    }
+
+    reply(results.trim());
+    break;
+}
+      
       case 'kalkulator': {
             if (!text) {
                 await sock.sendMessage(from, { text: 'Silakan masukkan ekspresi matematika setelah `kalkulator`.\n\nContoh:\n1. kalkulator 1+1+8+9+7x7x5-2x6=\n2. kalkulator 2x99+67-182+888=' });
